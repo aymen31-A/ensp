@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="nav_title">الموقع الرسمي لشركة حفر الآبار E.N.S.P</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title data-i18n="nav_title">Project Nord Oran - E.N.S.P</title>
+    <link class="nav-logo-img" rel="icon" href="ensp.icon.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -13,8 +14,8 @@
         <div class="login-card">
             <div class="login-header">
                 <img src="ensp.icon.png" alt="E.N.S.P Logo" class="login-logo-img">
-                <h2 data-i18n="login_title">الموقع الرسمي لشركة حفر الآبار E.N.S.P</h2>
-                <p data-i18n="login_subtitle">بوابة تسجيل الدخول الموحدة للموظفين والإطارات</p>
+                <h2 data-i18n="login_title">Project Nord Oran</h2>
+                <p data-i18n="login_subtitle"><i class="fa-solid fa-shield-halved"></i> بوابة تسجيل الدخول الموحدة للموظفين والإطارات</p>
             </div>
             <form id="login-form">
                 <div class="input-group">
@@ -32,7 +33,7 @@
             <div id="login-error" class="error-msg"></div>
             
             <div class="lang-switcher-login">
-                <span class="lang-btn active" onclick="switchLanguage('ar')">AR</span> | 
+                <span class="lang-btn active" onclick="switchLanguage('ar')"><i class="fa-solid fa-earth-africa"></i> AR</span> | 
                 <span class="lang-btn" onclick="switchLanguage('fr')">FR</span>
             </div>
         </div>
@@ -43,24 +44,35 @@
         <header class="top-bar">
             <div class="right-section">
                 <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
-                <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo-img">
-                <h1 class="system-title" data-i18n="nav_title">الموقع الرسمي لشركة حفر الآبار E.N.S.P</h1>
+                
+                <div class="brand-container">
+                    <img src="Sonatrach.icon.png" alt="Sonatrach" class="nav-logo-img sonatrach-logo">
+                    <h1 class="system-title" data-i18n="nav_title">
+                        <i class="fa-solid fa-compass-drafting"></i> Project Nord Oran -
+                    </h1>
+                    <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo-img ensp-logo">
+                </div>
             </div>
+            
             <div class="left-section">
                 <button id="theme-toggle" class="theme-style-btn" title="تبديل الوضع">
                     <i class="fa-solid fa-moon"></i>
                 </button>
                 
                 <div class="language-switch">
-                    <span id="lang-ar" class="lang active" onclick="switchLanguage('ar')">AR</span>
+                    <span id="lang-ar" class="lang active" onclick="switchLanguage('ar')"><i class="fa-solid fa-globe"></i> AR</span>
                     <span id="lang-fr" class="lang" onclick="switchLanguage('fr')">FR</span>
                 </div>
                 
                 <div class="user-profile">
-                    <span id="user-role" class="role-badge" data-i18n="user_role">رئيس الورشة / منسق</span>
+                    <span id="user-role" class="role-badge"><i class="fa-solid fa-user-shield"></i> منسق</span>
                     <span id="user-display-name">عبد القادر حفراد</span>
-                    <i class="fa-solid fa-circle-user avatar-icon"></i>
-                    <button id="btn-logout" class="logout-btn" title="تسجيل الخروج"><i class="fa-solid fa-power-off"></i></button>
+                    
+                    <img src="abd.icon.png" alt="عبد القادر حفراد" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
+                    
+                    <button id="btn-logout" class="logout-btn-icon-only" title="تسجيل الخروج">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
                 </div>
             </div>
         </header>
@@ -69,39 +81,39 @@
             
             <aside class="sidebar-info">
                 <div class="info-card clock-card">
-                    <h2 id="live-time">12:00:00</h2>
+                    <h2><i class="fa-regular fa-clock"></i> <span id="live-time">00:00:00</span></h2>
                     <p id="live-day" data-i18n="thursday">الأحد</p>
-                    <p id="live-date">17 مايو 2026</p>
+                    <p id="live-date"><i class="fa-regular fa-calendar-days"></i> 17 مايو 2026</p>
                 </div>
 
                 <div class="info-card stats-card">
-                    <h3 data-i18n="quick_stats">إحصائيات سريعة</h3>
+                    <h3><i class="fa-solid fa-chart-pie"></i> إحصائيات سريعة</h3>
                     <div class="stat-row">
-                        <span data-i18n="stat_workers">عدد العمال</span>
+                        <span><i class="fa-solid fa-users"></i> عدد العمال</span>
                         <strong id="stat-workers">24</strong>
                     </div>
                     <div class="stat-row">
-                        <span data-i18n="stat_vehicles">المركبات والآليات</span>
+                        <span><i class="fa-solid fa-truck"></i> المركبات والآليات</span>
                         <strong id="stat-vehicles">45</strong>
                     </div>
                     <div class="stat-row">
-                        <span data-i18n="stat_faults">الأعطال النشطة</span>
+                        <span><i class="fa-solid fa-triangle-exclamation"></i> الأعطال النشطة</span>
                         <strong id="stat-faults" class="danger-text">3</strong>
                     </div>
                     <div class="stat-row">
-                        <span data-i18n="stat_reports">التقارير المرفوعة</span>
+                        <span><i class="fa-solid fa-file-invoice"></i> التقارير المرفوعة</span>
                         <strong id="stat-reports">27</strong>
                     </div>
                 </div>
             </aside>
 
             <section class="modules-grid">
-                <a href="workers.html" class="module-item dynamic-module" style="text-decoration: none;">
+                <a href="workers.html" class="module-item" style="text-decoration: none;">
                     <i class="fa-solid fa-users-gear module-icon"></i>
                     <span data-i18n="mod_workers">العمال</span>
                 </a>
                 
-                <a href="absences.html" class="module-item dynamic-module" style="text-decoration: none;">
+                <a href="absences.html" class="module-item" style="text-decoration: none;">
                     <i class="fa-solid fa-clipboard-user module-icon"></i>
                     <span data-i18n="mod_absences">إدارة الغيابات</span>
                 </a>
@@ -159,10 +171,27 @@
         </main>
 
         <footer class="dashboard-footer">
-            <p data-i18n="footer_text">© 2026 الموقع الرسمي للمؤسسة الوطنية للخدمات الآبار E.N.S.P - جميع الحقوق محفوظة</p>
+            <p data-i18n="footer_text">© 2026 Project Nord Oran - المؤسسة الوطنية لخدمات الآبار E.N.S.P - جميع الحقوق محفوظة</p>
         </footer>
     </div>
 
     <script src="app.js"></script>
+    <script>
+        // سكربت التوقيت المحلي الفعلي الحالي (GMT+1) بدون زيادة أو نقصان
+        function updateLiveTime() {
+            const timeElement = document.getElementById('live-time');
+            if (timeElement) {
+                let now = new Date();
+                
+                let hours = String(now.getHours()).padStart(2, '0');
+                let minutes = String(now.getMinutes()).padStart(2, '0');
+                let seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+        }
+        setInterval(updateLiveTime, 1000);
+        updateLiveTime();
+    </script>
 </body>
 </html>
