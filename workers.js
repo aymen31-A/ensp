@@ -1,7 +1,7 @@
-// قاعدة بيانات العمال المحدثة والمصححة بالكامل باللغتين العربية والفرنسية
+// قاعدة بيانات العمال الكاملة والمحدثة
 const workersDatabase = [
     {
-        id: "emp01",
+        id: "10407",
         firstname_ar: "عبد القادر", lastname_ar: "حفراد",
         firstname_fr: "Abdelkader", lastname_fr: "Hafrad",
         role_ar: "رئيس ورشة / منسق", role_fr: "Chef d'atelier / Coordinateur",
@@ -151,7 +151,7 @@ const workersDatabase = [
         role_ar: "مسعف طبي ميداني", role_fr: "Secouriste Médical Site",
         team_ar: "فرقة التدخل السريع", team_fr: "Équipe d'Intervention",
         age: 40, phone: "+213 552 96 32 14", married_ar: "متزوج", married_fr: "Marié",
-        course_ar: "الإسفاحات الأولية المتقدمة والاستجابة الطبية للطوارئ",
+        course_ar: "الإسعافات الأولية المتقدمة والاستجابة الطبية للطوارئ",
         course_fr: "Secourisme avancé et réponse médicale d'urgence sur site",
         course_date: "25-05-2024",
         course_place_ar: "الهلال الأحمر للتكوين الطبي (وهران)", course_place_fr: "Croissant Rouge - Formation Médicale (Oran)"
@@ -224,7 +224,7 @@ const workersDatabase = [
         team_ar: "فرقة التدخل السريع", team_fr: "Équipe d'Intervention",
         age: 39, phone: "+213 665 32 14 78", married_ar: "متزوج", married_fr: "Marié",
         course_ar: "إجراءات التدقيق والسلامة الداخلية لمنشآت تخزين الوقود NAFTAL",
-        course_fr: "Procédures d'audit de sécurité des dépôt de carburant NAFTAL",
+        course_fr: "Procédures d'audit de sécurité des dépôts de carburant NAFTAL",
         course_date: "07-05-2025",
         course_place_ar: "المركز التقني للأمن الصناعي (وهران)", course_place_fr: "Centre Technique de Sécurité Industrielle (Oran)"
     },
@@ -297,7 +297,7 @@ const dict = {
         title: "منظومة إدارة عمال وموظفي ورشات ENSP",
         pdf_title: "القائمة الاسمية الرسمية لعمال الورشة",
         total: "إجمالي العمال المقيدين بالورشة: 24 عامل",
-        th_img: "صورة العامل", th_name: "اسم ولقب الموظف (الرقم الوظيفي)", th_team: "الفرقة الميدانية",
+        th_img: "صورة العامل", th_name: "اسم ولقب الموظف (الرقم الوظيفي)",
         add: "إضافة عامل جديد", pdf: "تحميل وطباعة القائمة PDF",
         role_label: "منسق",
         lbl_id: "المعرف الرقمي:", lbl_age: "العمر الحالي:", lbl_phone: "رقم الهاتف:", lbl_status: "الحالة الاجتماعية:",
@@ -308,7 +308,7 @@ const dict = {
         title: "Gestion du Personnel des Chantiers - ENSP",
         pdf_title: "Liste Nominale Officielle du Personnel",
         total: "Total des employés inscrits: 24",
-        th_img: "Photo", th_name: "Nom & Prénom (ID)", th_team: "Équipe Terrain",
+        th_img: "Photo", th_name: "Nom & Prénom (ID)",
         add: "Ajouter un Employé", pdf: "Télécharger la Liste PDF",
         role_label: "Le Coordinateur",
         lbl_id: "ID Numérique:", lbl_age: "Âge Actuel:", lbl_phone: "N° de Téléphone:", lbl_status: "Statut Familial:",
@@ -351,7 +351,6 @@ function toggleLanguage(lang) {
     
     document.getElementById('th-img').innerText = dict[lang].th_img;
     document.getElementById('th-name').innerText = dict[lang].th_name;
-    document.getElementById('th-team').innerText = dict[lang].th_team;
     
     document.getElementById('btn-text-add').innerText = dict[lang].add;
     document.getElementById('btn-text-pdf').innerText = dict[lang].pdf;
@@ -380,9 +379,8 @@ function renderWorkersTable(data) {
         const tr = document.createElement('tr');
         const firstName = currentLang === 'ar' ? worker.firstname_ar : worker.firstname_fr;
         const lastName = currentLang === 'ar' ? worker.lastname_ar : worker.lastname_fr;
-        const team = currentLang === 'ar' ? (worker.team_ar || "الفرقة الرئيسية") : (worker.team_fr || "Équipe Principale");
         
-        // تحديد رابط الصورة (صورة مخصصة لعبد القادر وصور افتراضية للبقية)
+        // جلب الصور (صورة حقيقية للمنسق عبد القادر وصور افتراضية منسقة للبقية)
         const imgSrc = worker.id === "emp01" ? "abd.icon.png" : `https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100`;
 
         tr.innerHTML = `
@@ -391,7 +389,6 @@ function renderWorkersTable(data) {
                 <strong>${firstName} ${lastName}</strong>
                 <span class="emp-badge-id">${worker.id.toUpperCase()}</span>
             </td>
-            <td><i class="fa-solid fa-users" style="color:#ff7300; margin-left:6px; margin-right:6px;"></i>${team}</td>
         `;
         
         tr.onclick = () => showWorkerDetails(worker);
@@ -455,6 +452,7 @@ function updatePdfDate() {
     document.getElementById('pdf-date-text').innerText = `تاريخ استخراج المستند: ${dateStr}`;
 }
 
+// نافذة التنبيه المؤقتة
 function addNewWorker() {
     alert(currentLang === 'ar' ? "سيتم فتح نافذة إضافة عامل جديد قريباً!" : "Fonction d'ajout bientôt disponible !");
 }
