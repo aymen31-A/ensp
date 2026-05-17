@@ -1,12 +1,12 @@
 const languages = {
     ar: {
-        nav_title:  "الموقع الرسمي لشركة حفر الآبار e.n.s.p",
-        login_title: "الموقع الرسمي لشركة حفر الآبار e.n.s.p",
-        login_subtitle: "بوابة تسجيل الدخول الموحدة للموظفين",
+        nav_title: "Project Nord Oran - E.N.S.P",
+        login_title: "Project Nord Oran",
+        login_subtitle: "بوابة تسجيل الدخول الموحدة للموظفين والإطارات",
         email_label: "البريد الإلكتروني",
         password_label: "كلمة المرور",
         login_btn: "دخول آمن",
-        user_role: "مدير النظام",
+        user_role: "المنسق",
         thursday: "الخميس",
         quick_stats: "إحصائيات سريعة",
         stat_workers: "عدد العمال",
@@ -28,18 +28,18 @@ const languages = {
         mod_archive: "الأرشفة الرقمية",
         mod_charts: "منحنيات الأداء",
         mod_settings: "الإعدادات والصلاحيات",
-        footer_text: "© 2026 الموقع الرسمي لشركة حفر الآبار E.N.S.P - جميع الحقوق محفوضة  ",
+        footer_text: "© 2026 Project Nord Oran - المؤسسة الوطنية لخدمات الآبار E.N.S.P - جميع الحقوق محفوظة",
         alert_msg: "جاري فتح وحدة المتابعة الخاصة بـ: ",
         error_auth: "البريد الإلكتروني أو كلمة المرور غير صحيحة!"
     },
     fr: {
-        nav_title: "Le site officiel de la société de forage de puits e.n.s.p",
-        login_title: "Le site officiel de la société de forage de puits e.n.s.p",
+        nav_title: "Project Nord Oran - E.N.S.P",
+        login_title: "Project Nord Oran",
         login_subtitle: "Portail de Connexion Unique du Personnel",
         email_label: "Adresse Email",
         password_label: "Mot de Passe",
         login_btn: "Connexion Sécurisée",
-        user_role: "Administrateur",
+        user_role: "le Coordinatur",
         thursday: "Jeudi",
         quick_stats: "Statistiques Rapides",
         stat_workers: "Total Employés",
@@ -61,7 +61,7 @@ const languages = {
         mod_archive: "Archivage Numérique",
         mod_charts: "Courbes de Performance",
         mod_settings: "Paramètres & Droits",
-        footer_text: "© 2026 Site officiel de la société de forage de puits E.N.S.P - Tous droits réservés",
+        footer_text: "© 2026 Project Nord Oran - Entreprise Nationale des Services aux Puits E.N.S.P - Tous droits réservés",
         alert_msg: "Ouverture du module de: ",
         error_auth: "Email ou mot de passe incorrect!"
     }
@@ -94,7 +94,15 @@ function switchLanguage(lang) {
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (languages[lang][key]) {
-            element.innerText = languages[lang][key];
+            // التحقق لمنع مسح الأيقونات الداخلية أثناء تحديث النصوص
+            const icon = element.querySelector('i');
+            if (icon) {
+                element.innerHTML = '';
+                element.appendChild(icon);
+                element.appendChild(document.createTextNode(' ' + languages[lang][key]));
+            } else {
+                element.innerText = languages[lang][key];
+            }
         }
     });
 
@@ -108,7 +116,9 @@ function updateLiveDateAndDay() {
     const dateElem = document.getElementById('live-date');
     if (dayElem && dateElem) {
         dayElem.innerText = now.toLocaleDateString(locale, { weekday: 'long' });
-        dateElem.innerText = now.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
+        
+        // الحفاظ على الأيقونة داخل حقل التاريخ عند تحديث اللغة
+        dateElem.innerHTML = `<i class="fa-regular fa-calendar-days"></i> ${now.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })}`;
     }
 }
 
@@ -120,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnLogout = document.getElementById('btn-logout');
     const themeToggle = document.getElementById('theme-toggle');
 
-    // فحص ذكي لحالة تسجيل الدخول لمنع العودة الاستفزازية لصفحة الدخول
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
     
     if (isLoggedIn === 'true') {
@@ -177,7 +186,9 @@ function startLiveSystem() {
         const now = new Date();
         const timeString = now.toTimeString().split(' ')[0];
         const liveTimeElem = document.getElementById('live-time');
-        if(liveTimeElem) liveTimeElem.innerText = timeString;
+        if(liveTimeElem) {
+            liveTimeElem.innerHTML = `<i class="fa-regular fa-clock"></i> ${timeString}`;
+        }
     }, 1000);
 }
 
