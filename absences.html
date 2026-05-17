@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الغيابات اليومية - E.N.S.P</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        .absence-container { padding: 20px; max-width: 1100px; margin: 0 auto; background: #fff; }
+        .absence-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 15px; }
+        .absence-table th, .absence-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid #eee; vertical-align: middle; font-size: 0.95rem; }
+        .absence-table th { background: linear-gradient(135deg, #ff7300, #ff9100); color: white; font-weight: 600; }
+        
+        /* 🎯 نظام الأسهم الملونة الجذاب والخفيف جداً على المتصفح */
+        .status-select-custom { 
+            padding: 8px 15px; 
+            border-radius: 20px; 
+            font-weight: bold; 
+            font-size: 0.85rem; 
+            font-family: inherit;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            outline: none;
+            transition: all 0.2s ease;
+            width: 160px;
+            background-color: #fff;
+        }
+
+        /* حقول الألوان الديناميكية للأسهم بناءً على الحالة النشطة */
+        .select-present { border-color: #28a745 !important; color: #155724 !important; background-color: #d4edda !important; }
+        .select-absent { border-color: #dc3545 !important; color: #721c24 !important; background-color: #f8d7da !important; }
+        .select-mission { border-color: #007bff !important; color: #004085 !important; background-color: #cce5ff !important; }
+        .select-vacation { border-color: #ffc107 !important; color: #856404 !important; background-color: #fff3cd !important; }
+
+        .reason-input { padding: 6px 10px; border-radius: 4px; border: 1px solid #ddd; width: 95%; font-family: inherit; font-size: 0.9rem; }
+        .reason-input:focus { border-color: #ff7300; outline: none; }
+        
+        .action-buttons { display: flex; gap: 15px; margin-top: 20px; }
+        .btn-action { 
+            border: none; padding: 10px 22px; border-radius: 4px; font-size: 0.95rem; 
+            cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.2s; 
+        }
+        .btn-save { background: #ff7300; color: white; }
+        .btn-save:hover { background: #e06500; }
+        .btn-pdf { background: #2c3e50; color: white; }
+        .btn-pdf:hover { background: #1a252f; }
+        
+        .header-tools { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 12px; border-radius: 6px; box-shadow: 0 1px 5px rgba(0,0,0,0.02); }
+        .date-picker { padding: 6px 12px; border-radius: 4px; border: 1px solid #ddd; font-weight: bold; font-family: inherit; }
+        
+        html[dir="ltr"] .absence-table th, html[dir="ltr"] .absence-table td { text-align: left; }
+        
+        /* 🖨️ ترويسة ورق الـ PDF النظيف للطباعة المباشرة */
+        .pdf-header { display: none; text-align: center; margin-bottom: 20px; border-bottom: 3px double #ff7300; padding-bottom: 10px; }
+        .pdf-header img { height: 60px; margin-bottom: 5px; }
+
+        /* سحب المحاذاة وإخفاء الهياكل الزائدة أثناء ضغط زر الطباعة للـ A4 الأولى */
+        .pdf-mode .action-buttons, .pdf-mode .header-tools { display: none !important; }
+        .pdf-mode .status-select-custom { border: none !important; -webkit-appearance: none; -moz-appearance: none; appearance: none; padding: 0 !important; font-size: 1rem !important; font-weight: bold; background: transparent !important; }
+        .pdf-mode .reason-input { border: none !important; background: transparent !important; padding: 0 !important; }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="right-section">
+            <a href="index.html" class="theme-style-btn" style="text-decoration:none;" title="رجوع للرئيسية"><i class="fa-solid fa-arrow-right"></i></a>
+            <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo-img">
+            <h1 id="page-title">منظومة إدارة وتسجيل الغيابات اليومية ورشات ENSP</h1>
+        </div>
+        <div class="left-section">
+            <div class="language-switch">
+                <span id="lang-ar" class="lang active" onclick="toggleLanguage('ar')">AR</span>
+                <span id="lang-fr" class="lang" onclick="switchLanguageFR()">FR</span>
+            </div>
+            <div class="user-profile">
+                <span class="role-badge">رئيس الورشة / منسق</span>
+                <span id="user-display">عبد القادر حفراد</span>
+                <i class="fa-solid fa-circle-user avatar-icon"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="absence-container" id="printable-area">
+        
+        <div class="pdf-header" id="pdf-only-header">
+            <img src="ensp.icon.png" alt="E.N.S.P">
+            <h2 style="margin:2px 0; color:#2c3e50; font-size: 1.5rem;">المؤسسة الوطنية للخدمات في الآبار - E.N.S.P</h2>
+            <h3 style="margin:5px 0; color:#ff7300; font-size: 1.2rem;" id="pdf-title">تقرير الوضعية الميدانية والغيابات اليومية للورشة</h3>
+            <p style="margin:5px 0; font-weight:bold; font-size:1rem;" id="pdf-date-text"></p>
+        </div>
+
+        <div class="header-tools">
+            <div>
+                <label id="lbl-date" style="font-weight: bold; margin-left: 10px;">تاريخ اليوم الميداني:</label>
+                <input type="date" id="absence-date" class="date-picker" onchange="updatePdfDate()">
+            </div>
+            <div style="font-size: 0.95rem; color: #555;" id="txt-total">إجمالي عمال الورشة المدرجين: 24 عامل</div>
+        </div>
+
+        <table class="absence-table">
+            <thead>
+                <tr>
+                    <th id="th-id" style="width: 12%;">المعرف</th>
+                    <th id="th-name" style="width: 38%;">اسم ولقب الموظف</th>
+                    <th id="th-status" style="width: 20%;">الوضعية اليومية (قائمة الأسهم)</th>
+                    <th id="th-reason" style="width: 30%;">المبرر / ملاحظات الحقل</th>
+                </tr>
+            </thead>
+            <tbody id="absence-table-body">
+                </tbody>
+        </table>
+
+        <div class="action-buttons">
+            <button class="btn-action btn-save" onclick="saveAbsenceData()">
+                <i class="fa-solid fa-floppy-disk"></i> <span id="btn-text-save">حفظ في النظام</span>
+            </button>
+            <button class="btn-action btn-pdf" onclick="exportToPDF()">
+                <i class="fa-solid fa-file-pdf"></i> <span id="btn-text-pdf">تحميل وطباعة PDF</span>
+            </button>
+        </div>
+    </main>
+
+    <script src="workers.js"></script>
+    <script>
+        let currentLang = 'ar';
+
+        const dict = {
+            ar: {
+                title: "منظومة إدارة وتسجيل الغيابات اليومية ورشات ENSP",
+                pdf_title: "تقرير الوضعية الميدانية والغيابات اليومية للورشة",
+                lbl_date: "تاريخ اليوم الميداني:",
+                total: "إجمالي عمال الورشة المدرجين: 24 عامل",
+                th_id: "المعرف", th_name: "اسم ولقب الموظف", th_status: "الوضعية اليومية (قائمة الأسهم)", th_reason: "المبرر / ملاحظات الحقل",
+                present: "حاضر بالموقع", absent: "غائب عن العمل", mission: "مهمة خارجية", vacation: "عطلة / راحة",
+                save: "حفظ في النظام", pdf: "تحميل وطباعة PDF", success: "تم حفظ التقرير الميداني بنجاح!"
+            },
+            fr: {
+                title: "Gestion des Absences Quotidiennes - ENSP",
+                pdf_title: "Rapport de Situation Terrain et Absences",
+                lbl_date: "Date du jour de chantier:",
+                total: "Total employés: 24",
+                th_id: "ID", th_name: "Nom & Prénom", th_status: "Statut (Liste)", th_reason: "Justification / Notes",
+                present: "Présent sur site", absent: "Absent", mission: "Mission externe", vacation: "Congé / Repos",
+                save: "Sauvegarder", pdf: "Télécharger PDF", success: "Rapport enregistré avec succès !"
+            }
+        };
+
+        function toggleLanguage(lang) {
+            currentLang = lang;
+            const htmlTag = document.documentElement;
+            if(lang === 'ar') {
+                htmlTag.setAttribute('dir', 'rtl');
+                htmlTag.setAttribute('lang', 'ar');
+                document.getElementById('lang-ar').classList.add('active');
+                document.getElementById('lang-fr').classList.remove('active');
+                document.getElementById('user-display').innerText = "عبد القادر حفراد";
+            } else {
+                htmlTag.setAttribute('dir', 'ltr');
+                htmlTag.setAttribute('lang', 'fr');
+                document.getElementById('lang-fr').classList.add('active');
+                document.getElementById('lang-ar').classList.remove('active');
+                document.getElementById('user-display').innerText = "Abdelkader Hafrad";
+            }
+
+            document.getElementById('page-title').innerText = dict[lang].title;
+            document.getElementById('pdf-title').innerText = dict[lang].pdf_title;
+            document.getElementById('lbl-date').innerText = dict[lang].lbl_date;
+            document.getElementById('txt-total').innerText = dict[lang].total;
+            document.getElementById('th-id').innerText = dict[lang].th_id;
+            document.getElementById('th-name').innerText = dict[lang].th_name;
+            document.getElementById('th-status').innerText = dict[lang].th_status;
+            document.getElementById('th-reason').innerText = dict[lang].th_reason;
+            document.getElementById('btn-text-save').innerText = dict[lang].save;
+            document.getElementById('btn-text-pdf').innerText = dict[lang].pdf;
+
+            renderAbsenceTable();
+            updatePdfDate();
+        }
+
+        function switchLanguageFR() { toggleLanguage('fr'); }
+
+        function renderAbsenceTable() {
+            const tbody = document.getElementById('absence-table-body');
+            tbody.innerHTML = "";
+
+            workersDatabase.forEach(worker => {
+                const tr = document.createElement('tr');
+                const firstName = currentLang === 'ar' ? worker.firstname_ar : worker.firstname_fr;
+                const lastName = currentLang === 'ar' ? worker.lastname_ar : worker.lastname_fr;
+                
+                tr.innerHTML = `
+                    <td><strong>${worker.id.toUpperCase()}</strong></td>
+                    <td>${firstName} ${lastName}</td>
+                    <td>
+                        <select class="status-select-custom select-present" onchange="updateSelectColor(this)">
+                            <option value="present" class="select-present" selected>${dict[currentLang].present}</option>
+                            <option value="absent" class="select-absent">${dict[currentLang].absent}</option>
+                            <option value="mission" class="select-mission">${dict[currentLang].mission}</option>
+                            <option value="vacation" class="select-vacation">${dict[currentLang].vacation}</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="reason-input" placeholder="..."></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // دالة ديناميكية لتغيير لون حقل السهم فوراً عند اختيار وضعية جديدة
+        function updateSelectColor(selectElement) {
+            selectElement.className = "status-select-custom"; // تفريغ الكلاسات السابقة
+            if(selectElement.value === "present") selectElement.classList.add("select-present");
+            if(selectElement.value === "absent") selectElement.classList.add("select-absent");
+            if(selectElement.value === "mission") selectElement.classList.add("select-mission");
+            if(selectElement.value === "vacation") selectElement.classList.add("select-vacation");
+        }
+
+        function updatePdfDate() {
+            const dateVal = document.getElementById('absence-date').value;
+            document.getElementById('pdf-date-text').innerText = `تاريخ التقرير الميداني / Date: ${dateVal}`;
+        }
+
+        function saveAbsenceData() {
+            alert(dict[currentLang].success);
+            window.location.href = "index.html";
+        }
+
+        function exportToPDF() {
+            const container = document.getElementById('printable-area');
+            const pdfHeader = document.getElementById('pdf-only-header');
+            
+            container.classList.add('pdf-mode');
+            pdfHeader.style.display = 'block';
+            
+            const opt = {
+                margin:       [12, 12, 12, 12], 
+                filename:     `Rapport_ENSP_${document.getElementById('absence-date').value}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(container).save().then(() => {
+                container.classList.remove('pdf-mode');
+                pdfHeader.style.display = 'none';
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if(sessionStorage.getItem('isLoggedIn') !== 'true') {
+                window.location.href = "index.html";
+                return;
+            }
+            document.getElementById('absence-date').valueAsDate = new Date();
+            toggleLanguage('ar');
+        });
+    </script>
+</body>
+</html>

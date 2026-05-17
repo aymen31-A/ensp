@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="nav_title">الموقع الرسمي لشركة حفر الآبار E.N.S.P</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="login-screen" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="ensp.icon.png" alt="E.N.S.P Logo" class="login-logo-img">
+                <h2 data-i18n="login_title">الموقع الرسمي لشركة حفر الآبار E.N.S.P</h2>
+                <p data-i18n="login_subtitle">بوابة تسجيل الدخول الموحدة للموظفين والإطارات</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <label><i class="fa-solid fa-envelope"></i> <span data-i18n="email_label">البريد الإلكتروني</span></label>
+                    <input type="email" id="login-email" required placeholder="username@ensp.dz">
+                </div>
+                <div class="input-group">
+                    <label><i class="fa-solid fa-lock"></i> <span data-i18n="password_label">كلمة المرور</span></label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-login">
+                    <span data-i18n="login_btn">دخول آمن</span> <i class="fa-solid fa-right-to-bracket"></i>
+                </button>
+            </form>
+            <div id="login-error" class="error-msg"></div>
+            
+            <div class="lang-switcher-login">
+                <span class="lang-btn active" onclick="switchLanguage('ar')">AR</span> | 
+                <span class="lang-btn" onclick="switchLanguage('fr')">FR</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-dashboard" class="dashboard-layout hidden">
+        
+        <header class="top-bar">
+            <div class="right-section">
+                <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+                <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo-img">
+                <h1 class="system-title" data-i18n="nav_title">الموقع الرسمي لشركة حفر الآبار E.N.S.P</h1>
+            </div>
+            <div class="left-section">
+                <button id="theme-toggle" class="theme-style-btn" title="تبديل الوضع">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                
+                <div class="language-switch">
+                    <span id="lang-ar" class="lang active" onclick="switchLanguage('ar')">AR</span>
+                    <span id="lang-fr" class="lang" onclick="switchLanguage('fr')">FR</span>
+                </div>
+                
+                <div class="user-profile">
+                    <span id="user-role" class="role-badge" data-i18n="user_role">رئيس الورشة / منسق</span>
+                    <span id="user-display-name">عبد القادر حفراد</span>
+                    <i class="fa-solid fa-circle-user avatar-icon"></i>
+                    <button id="btn-logout" class="logout-btn" title="تسجيل الخروج"><i class="fa-solid fa-power-off"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            
+            <aside class="sidebar-info">
+                <div class="info-card clock-card">
+                    <h2 id="live-time">12:00:00</h2>
+                    <p id="live-day" data-i18n="thursday">الأحد</p>
+                    <p id="live-date">17 مايو 2026</p>
+                </div>
+
+                <div class="info-card stats-card">
+                    <h3 data-i18n="quick_stats">إحصائيات سريعة</h3>
+                    <div class="stat-row">
+                        <span data-i18n="stat_workers">عدد العمال</span>
+                        <strong id="stat-workers">24</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span data-i18n="stat_vehicles">المركبات والآليات</span>
+                        <strong id="stat-vehicles">45</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span data-i18n="stat_faults">الأعطال النشطة</span>
+                        <strong id="stat-faults" class="danger-text">3</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span data-i18n="stat_reports">التقارير المرفوعة</span>
+                        <strong id="stat-reports">27</strong>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="modules-grid">
+                <a href="workers.html" class="module-item dynamic-module" style="text-decoration: none;">
+                    <i class="fa-solid fa-users-gear module-icon"></i>
+                    <span data-i18n="mod_workers">العمال</span>
+                </a>
+                
+                <a href="absences.html" class="module-item dynamic-module" style="text-decoration: none;">
+                    <i class="fa-solid fa-clipboard-user module-icon"></i>
+                    <span data-i18n="mod_absences">إدارة الغيابات</span>
+                </a>
+
+                <div class="module-item" onclick="triggerModule('vehicles')">
+                    <i class="fa-solid fa-truck-field module-icon"></i>
+                    <span data-i18n="mod_vehicles">المركبات</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('fuel')">
+                    <i class="fa-solid fa-gas-pump module-icon"></i>
+                    <span data-i18n="mod_fuel">الوقود والتموين</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('maintenance')">
+                    <i class="fa-solid fa-wrench module-icon"></i>
+                    <span data-i18n="mod_maintenance">الصيانة الدورية</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('reports')">
+                    <i class="fa-solid fa-file-pdf module-icon"></i>
+                    <span data-i18n="mod_reports">التقارير و PDF</span>
+                </div>
+                <div class="module-item alert-module" onclick="triggerModule('accidents')">
+                    <i class="fa-solid fa-triangle-exclamation module-icon"></i>
+                    <span data-i18n="mod_accidents">الأعطال والحوادث</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('weather')">
+                    <i class="fa-solid fa-cloud-sun module-icon"></i>
+                    <span data-i18n="mod_weather">حالة الطقس HSEQ</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('gps')">
+                    <i class="fa-solid fa-map-location-dot module-icon"></i>
+                    <span data-i18n="mod_gps">الموقع / GPS</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('qr')">
+                    <i class="fa-solid fa-qrcode module-icon"></i>
+                    <span data-i18n="mod_qr">رمز QR للعمال</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('signature')">
+                    <i class="fa-solid fa-signature module-icon"></i>
+                    <span data-i18n="mod_signature">التوقيع الإلكتروني</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('archive')">
+                    <i class="fa-solid fa-folder-open module-icon"></i>
+                    <span data-i18n="mod_archive">الأرشفة الرقمية</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('charts')">
+                    <i class="fa-solid fa-chart-line module-icon"></i>
+                    <span data-i18n="mod_charts">منحنيات الأداء</span>
+                </div>
+                <div class="module-item" onclick="triggerModule('settings')">
+                    <i class="fa-solid fa-gear module-icon"></i>
+                    <span data-i18n="mod_settings">الإعدادات والصلاحيات</span>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="dashboard-footer">
+            <p data-i18n="footer_text">© 2026 الموقع الرسمي للمؤسسة الوطنية للخدمات الآبار E.N.S.P - جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
