@@ -133,10 +133,6 @@ body {
     color: var(--text-muted);
 }
 
-.lang-switcher-login i {
-    margin-left: 3px;
-}
-
 .lang-btn {
     cursor: pointer;
     font-weight: bold;
@@ -161,7 +157,6 @@ body {
     left: 0;
     width: 100%;
     z-index: 100;
-    flex-wrap: nowrap;
 }
 
 .right-section, .left-section {
@@ -226,19 +221,7 @@ body {
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 15px;
-    border-left: 1px solid var(--border-color);
-    border-right: 1px solid var(--border-color);
-    padding: 0 15px;
-}
-
-html[dir="rtl"] .user-profile {
-    border-left: none;
-    padding-left: 0;
-}
-html[dir="ltr"] .user-profile {
-    border-right: none;
-    padding-right: 0;
+    gap: 12px;
 }
 
 .role-badge {
@@ -254,17 +237,11 @@ html[dir="ltr"] .user-profile {
     white-space: nowrap;
 }
 
-.avatar-icon {
-    font-size: 1.8rem;
-    color: var(--text-muted);
-    flex-shrink: 0;
-}
-
-/* زر إطفاء لتسجيل الخروج - أيقونة حمراء فقط مثل الصورة المرسلة تماماً */
+/* زر إطفاء لتسجيل الخروج - أيقونة حمراء فقط */
 .logout-btn-icon-only {
     background: none;
     border: none;
-    color: #e11d48; /* لون أحمر إطفاء واضح */
+    color: #e11d48; 
     font-size: 1.4rem;
     cursor: pointer;
     display: flex;
@@ -313,15 +290,14 @@ html[dir="ltr"] .user-profile {
 .clock-card h2 {
     font-size: 2.3rem;
     font-weight: 800;
-    letter-spacing: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
 }
 
-.clock-card p i {
-    margin-left: 5px;
+.clock-card h2 i {
+    font-size: 2.1rem;
 }
 
 .stats-card h3 {
@@ -355,21 +331,13 @@ html[dir="ltr"] .user-profile {
 
 .stat-row span i {
     color: #ff6b00;
-    width: 16px;
-    text-align: center;
-}
-
-.stat-row:last-child {
-    border-bottom: none;
 }
 
 .danger-text {
     color: #ef4444;
 }
 
-/* ==========================================================================
-   شبكة الأزرار الذكية المربعة (الستايل القديم الفاخر والأصلي)
-   ========================================================================== */
+/* شبكة الأزرار الذكية المربعة الأصلية الفخمة */
 .modules-grid {
     flex-grow: 1;
     display: grid;
@@ -433,7 +401,6 @@ html[dir="ltr"] .alert-module {
     height: 90px;
     object-fit: contain;
     margin-bottom: 15px;
-    filter: drop-shadow(0px 4px 8px rgba(255, 115, 0, 0.3));
 }
 
 .nav-logo-img {
@@ -443,14 +410,14 @@ html[dir="ltr"] .alert-module {
     flex-shrink: 0;
 }
 
-/* تنسيق حاوية الشعارات المدمجة للواجهة الرئيسية */
+/* حاوية الشعارات المدمجة */
 .brand-container {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-/* ضبط إطار شعار سوناتراك ليلامس الحواف تماماً وبشكل منسق */
+/* إطار سوناتراك الملامس */
 .sonatrach-logo {
     height: 42px; 
     width: auto;
@@ -461,89 +428,83 @@ html[dir="ltr"] .alert-module {
     background-color: #ffffff; 
 }
 
-/* تحسين فواصل المسافات بين الشعارات والنصوص */
-.system-title {
-    margin: 0 5px;
-}
-
 /* ==========================================================================
-   تجاوب الهواتف الذكية (Media Queries)
+   هندسة التجاوب الخاصة بالهواتف الذكية ( لمنع الاكتظاظ وتداخل العناصر تماماً )
    ========================================================================== */
 @media (max-width: 768px) {
-    .login-card {
-        padding: 25px 20px;
-    }
-    .login-header h2 {
-        font-size: 1.4rem;
-    }
-    .btn-login {
-        padding: 12px;
-        font-size: 1rem;
-    }
-
     .top-bar {
-        padding: 10px 12px;
-        height: auto;
-        flex-direction: column;
-        gap: 10px;
-    }
-    .right-section {
-        width: 100%;
+        padding: 0 12px;
+        height: 75px; /* رفع الارتفاع قليلاً لراحة العين */
+        display: flex;
         justify-content: space-between;
-    }
-    .system-title {
-        font-size: 1rem;
-    }
-    .left-section {
-        width: 100%;
-        justify-content: space-between;
-        gap: 10px;
-        border-top: 1px solid var(--border-color);
-        padding-top: 8px;
-    }
-    .user-profile {
-        border: none !important;
-        padding: 0;
-    }
-    #user-display-name {
-        font-size: 0.8rem;
+        align-items: center;
     }
 
+    /* تعديل حاوية الشعارات للهاتف لتفادي التداخل */
+    .brand-container {
+        gap: 6px;
+    }
+
+    .sonatrach-logo, .ensp-logo {
+        height: 35px; /* تصغير متناسق للشعارات */
+    }
+
+    /* إخفاء نص العنوان الطويل على الهاتف ليحل محله الأيقونة والشعارات المفتوحة آمنة */
+    .system-title {
+        font-size: 0px; /* إخفاء النص مع الحفاظ على الأيقونة */
+    }
+    .system-title i {
+        font-size: 1.2rem; /* ترك الأيقونة الصغيرة فقط كفاصل جمالي */
+        margin: 0 2px;
+    }
+
+    /* إخفاء تبديل اللغة والوضع المظلم بداخل قائمة منسدلة أو إخفاء الاسم الصريح للمستخدم */
+    #user-display-name, .language-switch {
+        display: none !important; /* إخفاء اسم المستخدم بالعربية لتوفير مساحة لصورته وزر الإطفاء */
+    }
+
+    .user-profile {
+        gap: 8px;
+    }
+
+    .role-badge {
+        padding: 4px 6px;
+        font-size: 0.75rem; /* تصغير بطاقة منسق تلقائياً */
+    }
+
+    .left-section {
+        gap: 8px;
+    }
+
+    /* تعديل توزيع المحتوى الرئيسي */
     .main-content {
-        margin-top: 120px;
+        margin-top: 75px;
         flex-direction: column;
         padding: 15px;
         gap: 20px;
     }
+
     .sidebar-info {
         width: 100%;
     }
 
+    /* شبكة الأزرار المربعة الأصلية على الهاتف (عمودين متناسقين تماماً بدلاً من التراكم العشوائي) */
     .modules-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        grid-template-columns: repeat(2, 1fr); 
         gap: 12px;
     }
+
     .module-item {
-        padding: 15px 10px;
+        padding: 20px 10px;
         border-radius: 10px;
-        gap: 8px;
+        gap: 10px;
     }
+
     .module-icon {
         font-size: 1.8rem;
     }
+
     .module-item span {
         font-size: 0.85rem;
-    }
-
-    .brand-container {
-        width: 100%;
-        justify-content: center;
-        gap: 8px;
-    }
-    .sonatrach-logo, .ensp-logo {
-        height: 32px; 
-    }
-    .system-title {
-        font-size: 0.95rem;
     }
 }

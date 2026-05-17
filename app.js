@@ -6,7 +6,7 @@ const languages = {
         email_label: "البريد الإلكتروني",
         password_label: "كلمة المرور",
         login_btn: "دخول آمن",
-        user_role: "المنسق",
+        user_role: "منسق", /* تعديل المسمى الوظيفي هنا */
         thursday: "الخميس",
         quick_stats: "إحصائيات سريعة",
         stat_workers: "عدد العمال",
@@ -39,7 +39,7 @@ const languages = {
         email_label: "Adresse Email",
         password_label: "Mot de Passe",
         login_btn: "Connexion Sécurisée",
-        user_role: "le Coordinatur",
+        user_role: "Le Coordinateur", /* تصحيح الكلمة بالفرنسية */
         thursday: "Jeudi",
         quick_stats: "Statistiques Rapides",
         stat_workers: "Total Employés",
@@ -184,10 +184,16 @@ document.addEventListener("DOMContentLoaded", () => {
 function startLiveSystem() {
     setInterval(() => {
         const now = new Date();
-        const timeString = now.toTimeString().split(' ')[0];
+        
+        // جلب أرقام الوقت فقط بدون توليد أيقونات إضافية لتفادي تكرار شكل الساعة
+        let hours = String(now.getHours()).padStart(2, '0');
+        let minutes = String(now.getMinutes()).padStart(2, '0');
+        let seconds = String(now.getSeconds()).padStart(2, '0');
+        
         const liveTimeElem = document.getElementById('live-time');
         if(liveTimeElem) {
-            liveTimeElem.innerHTML = `<i class="fa-regular fa-clock"></i> ${timeString}`;
+            // تحديث الأرقام النصية فقط داخل حاوية الـ span المحمية
+            liveTimeElem.innerText = `${hours}:${minutes}:${seconds}`;
         }
     }, 1000);
 }
