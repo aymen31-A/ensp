@@ -90,7 +90,7 @@ const languages = {
         mod_workers: "Personnel",
         mod_absences: "Absences",
         mod_attendance: "Présence & Shifts",
-        mod_vehicles: "Véhicules",
+        mod_vehicles: "Gestion Flotte",
         mod_fuel: "Carburant & Suivi",
         mod_maintenance: "Maintenance Périodique",
         mod_reports: "Rapports & PDF",
@@ -166,6 +166,7 @@ function updateLiveDateAndDay() {
     }
 }
 
+// دالة التحكم في فتح وإغلاق اللوحة الجانبية
 function toggleSettingsSidebar(show) {
     const sidebar = document.getElementById('settings-sidebar');
     const overlay = document.getElementById('sidebar-overlay');
@@ -180,25 +181,6 @@ function toggleSettingsSidebar(show) {
     }
 }
 
-function triggerModule(moduleKey) {
-    const moduleName = languages[currentLang]['mod_' + moduleKey] || moduleKey;
-    alert(`${languages[currentLang].alert_msg} [ ${moduleName} ]`);
-}
-
-function startLiveSystem() {
-    setInterval(() => {
-        const now = new Date();
-        let hours = String(now.getHours()).padStart(2, '0');
-        let minutes = String(now.getMinutes()).padStart(2, '0');
-        let seconds = String(now.getSeconds()).padStart(2, '0');
-        
-        const liveTimeElem = document.getElementById('live-time');
-        if(liveTimeElem) {
-            liveTimeElem.innerText = `${hours}:${minutes}:${seconds}`;
-        }
-    }, 1000);
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById('login-form');
     const loginScreen = document.getElementById('login-screen');
@@ -206,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginError = document.getElementById('login-error');
     const btnLogout = document.getElementById('btn-logout');
     
+    // ربط زر القائمة العلوي الثلاث أخطوط لفتح اللوحة أيضاً إذا لزم الأمر
     const menuToggleBtn = document.getElementById('menu-toggle-btn');
     const sidebarThemeToggle = document.getElementById('sidebar-theme-toggle');
 
@@ -232,7 +215,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 loginScreen.classList.add('hidden');
                 mainDashboard.classList.remove('hidden');
                 startLiveSystem();
-                switchLanguage(currentLang);
             } else {
                 loginError.innerText = languages[currentLang].error_auth;
             }
@@ -247,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ✅ التعديل الوحيد: زر الثلاثة أعمدة يفتح الإعدادات
     if (menuToggleBtn) {
         menuToggleBtn.addEventListener('click', () => toggleSettingsSidebar(true));
     }
@@ -265,3 +246,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+function startLiveSystem() {
+    setInterval(() => {
+        const now = new Date();
+        let hours = String(now.getHours()).padStart(2, '0');
+        let minutes = String(now.getMinutes()).padStart(2, '0');
+        let seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        const liveTimeElem = document.getElementById('live-time');
+        if(liveTimeElem) {
+            liveTimeElem.innerText = `${hours}:${minutes}:${seconds}`;
+        }
+    }, 1000);
+}
+
+function triggerModule(moduleKey) {
+    const moduleName = languages[currentLang]['mod_' + moduleKey] || moduleKey;
+    alert(`${languages[currentLang].alert_msg} [ ${moduleName} ]`);
+}
