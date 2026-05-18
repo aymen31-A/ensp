@@ -651,3 +651,59 @@ html[dir="ltr"] .alert-module {
         width: 280px;
     }
 }
+/* ===== حل مشكلة تداخل الشعارات في اللغة الإنجليزية والفرنسية ===== */
+
+/* تحسين حاوية الشعارات */
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+/* تصغير حجم الشعارات في الوضع ltr */
+html[dir="ltr"] .sonatrach-logo,
+html[dir="ltr"] .ensp-logo {
+    height: 28px !important;
+    width: auto;
+}
+
+/* تحسين عرض النص بين الشعارات */
+html[dir="ltr"] .system-title {
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+/* للشاشات الصغيرة في الوضع ltr */
+@media (max-width: 768px) {
+    html[dir="ltr"] .sonatrach-logo,
+    html[dir="ltr"] .ensp-logo {
+        height: 24px !important;
+    }
+    
+    html[dir="ltr"] .system-title {
+        font-size: 0.55rem !important;
+        max-width: 100px;
+    }
+    
+    html[dir="ltr"] .brand-container {
+        gap: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    html[dir="ltr"] .sonatrach-logo,
+    html[dir="ltr"] .ensp-logo {
+        display: none !important; /* إخفاء أحد الشعارين في الهواتف الصغيرة جداً */
+    }
+    
+    html[dir="ltr"] .system-title {
+        font-size: 0.6rem !important;
+        max-width: 120px;
+    }
+}
