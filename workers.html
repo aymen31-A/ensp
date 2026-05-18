@@ -2,14 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title id="nav-title">إدارة قائمة العمال - E.N.S.P</title>
     <link rel="icon" href="ensp.icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
-    <!-- كود حماية لمنع الوميض الأبيض عند الانتقال بين الصفحات -->
     <script>
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -17,175 +16,108 @@
     </script>
     
     <style>
-        /* التنسيق الموحد لصفحة إدارة العمال */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f7f9fa; transition: background 0.3s, color 0.3s; }
         .workers-container { padding: 20px; max-width: 1100px; margin: 90px auto 20px auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         
-        .workers-table { 
-            width: 100%; 
-            border-collapse: separate; 
-            border-spacing: 0; 
-            background: #fff; 
-            border-radius: 6px; 
-            overflow: hidden; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-            margin-top: 15px; 
-            border: 1px solid #e9ecef;
-        }
-        
-        .workers-table th, .workers-table td { 
-            padding: 12px 16px; 
-            text-align: right; 
-            border-bottom: 1px solid #edf2f7; 
-            vertical-align: middle; 
-            font-size: 0.95rem; 
-        }
-        
-        .workers-table th { 
-            background: linear-gradient(135deg, #ff7300, #ff9100); 
-            color: white; 
-            font-weight: 600; 
-        }
-
+        .workers-table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 15px; border: 1px solid #e9ecef; }
+        .workers-table th, .workers-table td { padding: 12px 16px; text-align: right; border-bottom: 1px solid #edf2f7; vertical-align: middle; font-size: 0.95rem; }
+        .workers-table th { background: linear-gradient(135deg, #ff7300, #ff9100); color: white; font-weight: 600; }
         .workers-table tbody tr { cursor: pointer; transition: background-color 0.2s; }
         .workers-table tbody tr:hover td { background-color: #f8f9fa; }
-
-        .emp-badge-id {
-            background: rgba(255, 115, 0, 0.1); color: #ff7300; padding: 2px 8px; border-radius: 4px;
-            font-weight: bold; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; margin-right: 10px; display: inline-block;
-        }
+        .emp-badge-id { background: rgba(255, 115, 0, 0.1); color: #ff7300; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; margin-right: 10px; display: inline-block; }
         html[dir="ltr"] .emp-badge-id { margin-right: 0; margin-left: 10px; }
-
         .table-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #ff7300; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
         .header-tools { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 1px 5px rgba(0,0,0,0.02); border: 1px solid #e9ecef; gap: 15px; }
         .search-input { padding: 8px 15px; border-radius: 6px; border: 1px solid #ced4da; width: 280px; font-family: inherit; font-size: 0.9rem; }
-        
         .action-buttons { display: flex; gap: 15px; margin-top: 20px; }
         .btn-action { border: none; padding: 10px 22px; border-radius: 4px; font-size: 0.95rem; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
         .btn-add { background: #ff7300; color: white; }
         .btn-pdf { background: #2c3e50; color: white; }
-        
         html[dir="ltr"] .workers-table th, html[dir="ltr"] .workers-table td { text-align: left; }
-        
         .pdf-header { display: none; text-align: center; margin-bottom: 20px; border-bottom: 3px double #ff7300; padding-bottom: 10px; }
         .pdf-header img { height: 60px; margin-bottom: 5px; }
         .pdf-mode .action-buttons, .pdf-mode .header-tools { display: none !important; }
 
-        /* الترويسة العلوية النظيفة (بدون لغات متزاحمة) */
-        .top-bar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 65px; background: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between;
-            align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 1500; transition: background 0.3s;
-        }
-        .nav-right { display: flex; align-items: center; gap: 12px; max-width: 60%; }
-        .nav-left { display: flex; align-items: center; gap: 15px; max-width: 40%; justify-content: flex-end; }
-        .brand-wrapper { display: flex; align-items: center; gap: 10px; overflow: hidden; }
-        .nav-logo { height: 38px; width: auto; flex-shrink: 0; object-fit: contain; }
-        .sys-title { margin: 0; font-size: 1rem; font-weight: bold; color: #2c3e50; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .user-meta { display: flex; align-items: center; gap: 10px; overflow: hidden; }
-        .coordinator-badge { background: #ff7300; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
-        .user-name-txt { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .avatar-top { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd; flex-shrink: 0; }
+        .top-bar { position: fixed; top: 0; left: 0; width: 100%; height: 65px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 1500; transition: background 0.3s; }
+        .brand-wrapper { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+        .nav-logo { height: 35px; width: auto; flex-shrink: 0; object-fit: contain; }
+        .sys-title { margin: 0; font-size: 0.8rem; font-weight: bold; color: #2c3e50; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* ستايل اللوحة الجانبية للإعدادات (نصف الشاشة 50%) */
-        .settings-sidebar {
-            position: fixed; top: 0; right: -50%; width: 50%; height: 100%; background-color: #ffffff;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.15); z-index: 3000; transition: right 0.4s ease, left 0.4s ease;
-            display: flex; flex-direction: column; padding: 25px; box-sizing: border-box;
-        }
+        /* لوحة الإعدادات */
+        .settings-sidebar { position: fixed; top: 0; right: -50%; width: 50%; height: 100%; background-color: #ffffff; box-shadow: -5px 0 15px rgba(0,0,0,0.15); z-index: 3000; transition: right 0.4s ease, left 0.4s ease; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; }
         .settings-sidebar.open { right: 0; }
-
         html[dir="ltr"] .settings-sidebar { right: auto; left: -50%; box-shadow: 5px 0 15px rgba(0,0,0,0.15); }
         html[dir="ltr"] .settings-sidebar.open { left: 0; }
-
+        [data-theme="dark"] .settings-sidebar { background-color: #1a1a1a; color: #ffffff; border-left: 1px solid #333; }
         .sidebar-custom-header { display: flex; flex-direction: column; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; position: relative; }
         .sidebar-subtitle-top { font-size: 1.1rem; color: #555; margin: 0 0 10px 0; font-weight: 500; }
         .sidebar-main-title-wrapper { display: flex; align-items: center; gap: 12px; }
-        .sidebar-main-title-wrapper h3 { margin: 0; font-size: 1.6rem; font-weight: bold; display: flex; align-items: center; gap: 10px; color: #2c3e50; }
+        .sidebar-main-title-wrapper h3 { margin: 0; font-size: 1.6rem; font-weight: bold; color: #2c3e50; }
         .sidebar-main-title-wrapper i { font-size: 1.7rem; color: #ff7300; }
         .close-sidebar-btn { position: absolute; top: -10px; left: 0; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #666; }
         html[dir="ltr"] .close-sidebar-btn { left: auto; right: 0; }
-
         .settings-options-container { margin-top: 20px; }
         .setting-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: 600; font-size: 0.95rem; }
-        .setting-item select, .setting-item button { padding: 8px 15px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #333; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
-        .btn-theme-toggle { background: #f0f0f0; border: none; transition: 0.2s; }
-        .btn-theme-toggle:hover { background: #e0e0e0; }
-
-        .sidebar-footer-note { margin-top: auto; text-align: center; font-size: 0.7rem; color: rgba(0, 0, 0, 0.4); font-family: Arial, sans-serif; white-space: nowrap; }
+        .setting-item select, .setting-item button { padding: 8px 15px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #333; cursor: pointer; }
+        .sidebar-footer-note { margin-top: auto; text-align: center; font-size: 0.7rem; color: rgba(0, 0, 0, 0.4); }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2999; display: none; }
         .sidebar-overlay.show { display: block; }
 
-        /* تصميم نافذة المودال لعرض البيانات بالكامل */
+        /* مودال */
         .worker-modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); backdrop-filter: blur(3px); }
-        .modal-content { background-color: #fff; margin: 8% auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); position: relative; border-top: 5px solid #ff7300; color: #333; }
+        .modal-content { background-color: #fff; margin: 8% auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); position: relative; border-top: 5px solid #ff7300; }
         .close-modal { position: absolute; top: 15px; left: 20px; font-size: 1.5rem; color: #aaa; cursor: pointer; }
         html[dir="ltr"] .close-modal { left: auto; right: 20px; }
-        
         .modal-profile-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .modal-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ff7300; }
-        .modal-header-info h3 { margin: 0 0 5px 0; color: #2c3e50; font-size: 1.25rem; }
-
-        .role-tag { padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
-        .tag-operator { color: #004085; background-color: #cce5ff; }
-        .tag-mechanic { color: #155724; background-color: #d4edda; }
-        .tag-driver { color: #856404; background-color: #fff3cd; }
-        .tag-helper { color: #343a40; background-color: #e2e3e5; }
-        
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .info-item { display: flex; flex-direction: column; }
         .info-item span { font-size: 0.8rem; color: #777; }
         .info-item strong { font-size: 0.9rem; color: #333; margin-top: 2px; }
-
         .training-section { background: #f8f9fa; padding: 15px; border-radius: 6px; border-right: 4px solid #ff7300; margin-top: 15px; }
         html[dir="ltr"] .training-section { border-right: none; border-left: 4px solid #ff7300; }
-        .training-section h4 { margin: 0 0 10px 0; color: #ff7300; font-size: 0.95rem; }
 
-        /* دعم الوضع الداكن الشامل المتطور */
+        /* الوضع المظلم */
         [data-theme="dark"] body { background-color: #121212; color: #fff; }
         [data-theme="dark"] .top-bar, [data-theme="dark"] .workers-container, [data-theme="dark"] .settings-sidebar, [data-theme="dark"] .modal-content { background-color: #1a1a1a; color: #fff; }
-        [data-theme="dark"] .settings-sidebar { border-left: 1px solid #333; }
-        [data-theme="dark"] html[dir="ltr"] .settings-sidebar { border-left: none; border-right: 1px solid #333; }
-        [data-theme="dark"] .sidebar-custom-header { border-bottom-color: #333; }
-        [data-theme="dark"] .sidebar-subtitle-top { color: #bbb; }
-        [data-theme="dark"] .sidebar-main-title-wrapper h3 { color: #fff; }
-        [data-theme="dark"] .close-sidebar-btn { color: #ccc; }
-        [data-theme="dark"] .setting-item select { background: #252525; color: #fff; border-color: #444; }
-        [data-theme="dark"] .btn-theme-toggle { background: #333; color: #fff; }
-        [data-theme="dark"] .sidebar-footer-note { color: rgba(255, 255, 255, 0.3); }
-        [data-theme="dark"] .sys-title, [data-theme="dark"] .modal-header-info h3, [data-theme="dark"] .info-item strong { color: #fff; }
-        [data-theme="dark"] .header-tools, [data-theme="dark"] .search-input { background: #222; color: #fff; border-color: #444; }
+        [data-theme="dark"] .sys-title { color: #fff; }
         [data-theme="dark"] .workers-table { background: #1a1a1a; border-color: #444; }
         [data-theme="dark"] .workers-table td { border-bottom-color: #333; color: #eee; }
-        [data-theme="dark"] .workers-table tbody tr:hover td { background-color: #252525; }
-        [data-theme="dark"] .training-section { background: #252525; }
+
+        /* تحسين الهواتف */
+        @media (max-width: 768px) {
+            .settings-sidebar { width: 85% !important; right: -85% !important; }
+            html[dir="ltr"] .settings-sidebar { left: -85% !important; right: auto !important; }
+            .settings-sidebar.open { right: 0 !important; }
+            html[dir="ltr"] .settings-sidebar.open { left: 0 !important; }
+            .brand-wrapper { gap: 4px !important; }
+            .nav-logo { height: 28px !important; }
+            .sys-title { font-size: 0.6rem !important; max-width: 100px; }
+        }
+        @media (max-width: 480px) {
+            .settings-sidebar { width: 100% !important; right: -100% !important; }
+            html[dir="ltr"] .nav-logo { display: none !important; }
+            .modules-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- الترويسة العلوية النظيفة لمنع الازدحام -->
     <header class="top-bar">
-        <div class="nav-right">
-            <a href="index.html" style="color: inherit; text-decoration: none; margin-left: 5px;"><i class="fa-solid fa-arrow-right"></i></a>
-            <div class="brand-wrapper">
-                <img src="Sonatrach.icon.png" alt="Sonatrach" class="nav-logo">
-                <h1 id="nav-system-title" class="sys-title">Projet Nord Oran - E.N.S.P</h1>
-                <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo">
-            </div>
+        <div class="brand-wrapper">
+            <img src="Sonatrach.icon.png" alt="Sonatrach" class="nav-logo">
+            <h1 class="sys-title">Projet Nord Oran - E.N.S.P</h1>
+            <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo">
         </div>
         
-        <div class="left-section" style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
-            <div class="user-profile" style="display: flex; align-items: center; gap: 8px;">
-                <span id="user-role" class="role-badge" style="font-size: 0.8rem; padding: 3px 8px; border-radius: 4px;"><i class="fa-solid fa-user-shield"></i> <span data-i18n="user_role">منسق</span></span>
-                <span id="user-display-name" style="font-size: 0.85rem; font-weight: 500; white-space: nowrap;">عبد القادر حفراد</span>
-                
-                <img src="abd.icon.png" alt="عبد القادر حفراد" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="background: rgba(255,107,0,0.1); color: #ff6b00; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem;"><i class="fa-solid fa-user-shield"></i> منسق</span>
+                <span style="font-size: 0.85rem;">عبد القادر حفراد</span>
+                <img src="abd.icon.png" alt="عبد القادر حفراد" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
             </div>
-            
-            <!-- زر الإعدادات لفتح لوحة التحكم بنصف الشاشة -->
-            <button onclick="toggleSettingsSidebar(true)" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:inherit; padding: 5px;"><i class="fa-solid fa-gear"></i></button>
+            <button onclick="toggleSettingsSidebar(true)" style="background:none; border:none; cursor:pointer; font-size:1.2rem;"><i class="fa-solid fa-gear"></i></button>
+            <button onclick="location.href='index.html'" style="background:none; border:none; cursor:pointer; font-size:1.2rem;"><i class="fa-solid fa-arrow-left"></i></button>
         </div>
     </header>
 
@@ -193,99 +125,141 @@
         <div class="pdf-header" id="pdf-only-header">
             <img src="ensp.icon.png" alt="ENSP Logo"><br>
             <strong style="font-size: 1.2rem; color:#ff7300;">المؤسسة الوطنية لخدمات الآبار - E.N.S.P</strong>
-            <h2 id="pdf-title">القائمة الاسمية الرسمية لعمال الورشة</h2>
+            <h2>القائمة الاسمية الرسمية لعمال الورشة</h2>
             <p id="pdf-date-text">تاريخ استخراج المستند: --/--/----</p>
         </div>
 
-        <h1 id="page-title" class="main-page-title">
-            منظومة إدارة عمال وموظفي ورشات ENSP
-        </h1>
+        <h1>منظومة إدارة عمال وموظفي ورشات ENSP</h1>
         
         <div class="header-tools">
             <input type="text" id="search-box" class="search-input" placeholder="ابحث باسم العامل أو الرقم الوظيفي..." oninput="filterWorkers()">
-            <span id="txt-total" style="font-weight: bold; color: #4a5568;">إجمالي العمال المقيدين بالورشة: 24 عامل</span>
+            <span style="font-weight: bold;">إجمالي العمال: <span id="total-workers">24</span> عامل</span>
         </div>
 
         <table class="workers-table">
             <thead>
-                <tr>
-                    <th id="th-img" style="width: 80px; text-align: center;">صورة العامل</th>
-                    <th id="th-name">اسم ولقب الموظف (الرقم الوظيفي)</th>
-                </tr>
+                <tr><th style="width: 80px;">صورة العامل</th><th>اسم ولقب الموظف (الرقم الوظيفي)</th></tr>
             </thead>
             <tbody id="workers-table-body"></tbody>
         </table>
 
         <div class="action-buttons">
-            <button class="btn-action btn-add" onclick="addNewWorker()">
-                <i class="fa-solid fa-user-plus"></i> <span id="btn-text-add">إضافة عامل جديد</span>
-            </button>
-            <button class="btn-action btn-pdf" onclick="exportWorkersPDF()">
-                <i class="fa-solid fa-file-pdf"></i> <span id="btn-text-pdf">تحميل وطباعة القائمة PDF</span>
-            </button>
+            <button class="btn-action btn-add" onclick="addNewWorker()"><i class="fa-solid fa-user-plus"></i> إضافة عامل جديد</button>
+            <button class="btn-action btn-pdf" onclick="exportWorkersPDF()"><i class="fa-solid fa-file-pdf"></i> تحميل وطباعة القائمة PDF</button>
         </div>
     </div>
 
-    <!-- مودال تفاصيل الموظف -->
     <div id="workerProfileModal" class="worker-modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeWorkerModal()">&times;</span>
             <div class="modal-profile-header">
-                <img id="modal-worker-img" src="" alt="Worker" class="modal-avatar">
-                <div class="modal-header-info">
-                    <h3 id="modal-worker-fullname">--</h3>
-                    <span id="modal-worker-badge" class="role-tag">--</span>
-                </div>
+                <img id="modal-worker-img" src="" class="modal-avatar">
+                <div><h3 id="modal-worker-fullname">--</h3><span id="modal-worker-badge" style="padding: 4px 10px; border-radius: 15px; font-size: 0.8rem;">--</span></div>
             </div>
             <div class="info-grid">
-                <div class="info-item"><span id="lbl-modal-id">المعرف الرقمي:</span><strong id="modal-worker-id">--</strong></div>
-                <div class="info-item"><span id="lbl-modal-age">العمر الحالي:</span><strong id="modal-worker-age">--</strong></div>
-                <div class="info-item"><span id="lbl-modal-phone">رقم الهاتف:</span><strong id="modal-worker-phone">--</strong></div>
-                <div class="info-item"><span id="lbl-modal-status">الحالة الاجتماعية:</span><strong id="modal-worker-status">--</strong></div>
+                <div class="info-item"><span>المعرف الرقمي:</span><strong id="modal-worker-id">--</strong></div>
+                <div class="info-item"><span>العمر:</span><strong id="modal-worker-age">--</strong></div>
+                <div class="info-item"><span>الهاتف:</span><strong id="modal-worker-phone">--</strong></div>
+                <div class="info-item"><span>الحالة الاجتماعية:</span><strong id="modal-worker-status">--</strong></div>
             </div>
             <div class="training-section">
-                <h4 id="modal-training-title">بيانات وحقيبة التكوين المهني الصناعي</h4>
-                <div style="margin-bottom: 8px;" class="info-item"><span id="lbl-modal-course">مادة التكوين المعتمدة:</span><strong id="modal-worker-course">--</strong></div>
-                <div class="info-grid" style="margin-bottom:0;">
-                    <div class="info-item"><span id="lbl-modal-date">تاريخ الدورة:</span><strong id="modal-worker-course-date">--</strong></div>
-                    <div class="info-item"><span id="lbl-modal-place">مكان التكوين:</span><strong id="modal-worker-course-place">--</strong></div>
-                </div>
+                <h4>بيانات التكوين المهني</h4>
+                <div><span>مادة التكوين:</span><strong id="modal-worker-course">--</strong></div>
+                <div><span>تاريخ الدورة:</span><strong id="modal-worker-course-date">--</strong></div>
+                <div><span>مكان التكوين:</span><strong id="modal-worker-course-place">--</strong></div>
             </div>
         </div>
     </div>
 
-    <!-- واجهة الإعدادات الجانبية المحدثة بالكامل (%50) -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSettingsSidebar(false)"></div>
     <div id="settings-sidebar" class="settings-sidebar">
         <div class="sidebar-custom-header">
             <button class="close-sidebar-btn" onclick="toggleSettingsSidebar(false)">&times;</button>
-            <span class="sidebar-subtitle-top" id="sidebar-subtitle">وسائل أخرى</span>
-            <div class="sidebar-main-title-wrapper">
-                <i class="fa-solid fa-gear"></i> <h3 id="sidebar-main-title">الاعـدادات</h3>
-            </div>
+            <span class="sidebar-subtitle-top">وسائل أخرى</span>
+            <div class="sidebar-main-title-wrapper"><i class="fa-solid fa-gear"></i><h3>الاعـدادات</h3></div>
         </div>
-        
         <div class="settings-options-container">
-            <div class="setting-item">
-                <span id="sidebar-theme-label">الوضع / المظهر:</span>
-                <button id="sidebar-theme-toggle" class="btn-theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-            </div>
-            
-            <div class="setting-item">
-                <span id="sidebar-lang-label">لغة النظام:</span>
-                <select id="sidebar-lang-select" onchange="toggleLanguage(this.value)">
-                    <option value="ar">العربية (AR)</option>
-                    <option value="en">English (EN)</option>
-                    <option value="fr">Français (FR)</option>
-                </select>
-            </div>
+            <div class="setting-item"><span>الوضع / المظهر:</span><button id="sidebar-theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></div>
+            <div class="setting-item"><span>لغة النظام:</span><select id="sidebar-lang-select" onchange="toggleLanguage(this.value)"><option value="ar">العربية (AR)</option><option value="en">English (EN)</option><option value="fr">Français (FR)</option></select></div>
         </div>
-
-        <div class="sidebar-footer-note">
-            Le coordinateur hafrad abdalkadre
-        </div>
+        <div class="sidebar-footer-note">Le coordinateur hafrad abdalkadre</div>
     </div>
 
-    <script src="workers.js"></script>
+    <script src="workers-data.js"></script>
+    <script>
+        // دوال الإعدادات
+        function toggleSettingsSidebar(show) {
+            const sidebar = document.getElementById('settings-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar && overlay) {
+                if (show) {
+                    sidebar.classList.add('open');
+                    overlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            }
+        }
+        
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const themeToggle = document.getElementById('sidebar-theme-toggle');
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                if (themeToggle) themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                if (themeToggle) themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+        }
+        
+        function toggleLanguage(lang) {
+            const htmlTag = document.documentElement;
+            if (lang === 'ar') {
+                htmlTag.setAttribute('dir', 'rtl');
+                htmlTag.setAttribute('lang', 'ar');
+            } else {
+                htmlTag.setAttribute('dir', 'ltr');
+                htmlTag.setAttribute('lang', lang);
+            }
+            localStorage.setItem('preferred_lang', lang);
+            const langSelect = document.getElementById('sidebar-lang-select');
+            if (langSelect) langSelect.value = lang;
+        }
+        
+        function closeWorkerModal() {
+            document.getElementById('workerProfileModal').style.display = 'none';
+        }
+        
+        function addNewWorker() {
+            alert('سيتم إضافة عامل جديد قريباً');
+        }
+        
+        function exportWorkersPDF() {
+            alert('سيتم تصدير PDF قريباً');
+        }
+        
+        function filterWorkers() {
+            // فلترة العمال
+        }
+        
+        // مزامنة اللغة المحفوظة
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('preferred_lang');
+            if (savedLang && savedLang !== 'ar') {
+                toggleLanguage(savedLang);
+            }
+            const themeToggle = document.getElementById('sidebar-theme-toggle');
+            if (themeToggle && document.documentElement.getAttribute('data-theme') === 'dark') {
+                themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+        });
+    </script>
 </body>
 </html>

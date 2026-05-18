@@ -121,14 +121,16 @@ function switchLanguage(lang) {
     if (lang === 'ar') {
         htmlTag.setAttribute('dir', 'rtl');
         htmlTag.setAttribute('lang', 'ar');
-        if(!document.getElementById('main-dashboard').classList.contains('hidden')) {
-            document.getElementById('user-display-name').innerText = "عبد القادر حفراد";
+        if(!document.getElementById('main-dashboard')?.classList.contains('hidden')) {
+            const userNameElem = document.getElementById('user-display-name');
+            if(userNameElem) userNameElem.innerText = "عبد القادر حفراد";
         }
     } else {
         htmlTag.setAttribute('dir', 'ltr');
         htmlTag.setAttribute('lang', lang);
-        if(!document.getElementById('main-dashboard').classList.contains('hidden')) {
-            document.getElementById('user-display-name').innerText = "Abdelkader Hafrad";
+        if(!document.getElementById('main-dashboard')?.classList.contains('hidden')) {
+            const userNameElem = document.getElementById('user-display-name');
+            if(userNameElem) userNameElem.innerText = "Abdelkader Hafrad";
         }
     }
 
@@ -166,7 +168,6 @@ function updateLiveDateAndDay() {
     }
 }
 
-// دالة التحكم في فتح وإغلاق اللوحة الجانبية
 function toggleSettingsSidebar(show) {
     const sidebar = document.getElementById('settings-sidebar');
     const overlay = document.getElementById('sidebar-overlay');
@@ -174,9 +175,11 @@ function toggleSettingsSidebar(show) {
         if (show) {
             sidebar.classList.add('open');
             overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
         } else {
             sidebar.classList.remove('open');
             overlay.classList.remove('show');
+            document.body.style.overflow = '';
         }
     }
 }
@@ -187,20 +190,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const mainDashboard = document.getElementById('main-dashboard');
     const loginError = document.getElementById('login-error');
     const btnLogout = document.getElementById('btn-logout');
-    
-    // ربط زر القائمة العلوي الثلاث أخطوط لفتح اللوحة أيضاً إذا لزم الأمر
     const menuToggleBtn = document.getElementById('menu-toggle-btn');
     const sidebarThemeToggle = document.getElementById('sidebar-theme-toggle');
 
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
     
     if (isLoggedIn === 'true') {
-        loginScreen.classList.add('hidden');
-        mainDashboard.classList.remove('hidden');
-        switchLanguage('ar');
+        loginScreen?.classList.add('hidden');
+        mainDashboard?.classList.remove('hidden');
+        switchLanguage(currentLang);
         startLiveSystem();
     } else {
         switchLanguage('ar');
+    }
+
+    if (sidebarThemeToggle) {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+            sidebarThemeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        } else {
+            sidebarThemeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+        }
+        
+        sidebarThemeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                sidebarThemeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                sidebarThemeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+        });
     }
 
     if (loginForm) {
@@ -209,12 +232,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value.trim();
 
-            if (email === "admin@company.com" && password === "123456") {
+            if (email === "aymen@gmail.com" && password === "arzewaensp2008") {
                 loginError.innerText = "";
                 sessionStorage.setItem('isLoggedIn', 'true');
                 loginScreen.classList.add('hidden');
                 mainDashboard.classList.remove('hidden');
                 startLiveSystem();
+                if (currentLang === 'ar') {
+                    document.getElementById('user-display-name').innerText = "عبد القادر حفراد";
+                } else {
+                    document.getElementById('user-display-name').innerText = "Abdelkader Hafrad";
+                }
+                switchLanguage(currentLang);
             } else {
                 loginError.innerText = languages[currentLang].error_auth;
             }
@@ -226,42 +255,29 @@ document.addEventListener("DOMContentLoaded", () => {
             sessionStorage.removeItem('isLoggedIn');
             mainDashboard.classList.add('hidden');
             loginScreen.classList.remove('hidden');
+            switchLanguage('ar');
         });
     }
 
     if (menuToggleBtn) {
         menuToggleBtn.addEventListener('click', () => toggleSettingsSidebar(true));
     }
-
-    if (sidebarThemeToggle) {
-        sidebarThemeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-                sidebarThemeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                sidebarThemeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
-            }
-        });
-    }
 });
 
 function startLiveSystem() {
-    setInterval(() => {
-        const now = new Date();
-        let hours = String(now.getHours()).padStart(2, '0');
-        let minutes = String(now.getMinutes()).padStart(2, '0');
-        let seconds = String(now.getSeconds()).padStart(2, '0');
-        
-        const liveTimeElem = document.getElementById('live-time');
-        if(liveTimeElem) {
-            liveTimeElem.innerText = `${hours}:${minutes}:${seconds}`;
-        }
-    }, 1000);
+    updateLiveTime();
+    setInterval(updateLiveTime, 1000);
+}
+
+function updateLiveTime() {
+    const now = new Date();
+    const liveTimeElem = document.getElementById('live-time');
+    if(liveTimeElem) {
+        liveTimeElem.innerText = now.toLocaleTimeString();
+    }
 }
 
 function triggerModule(moduleKey) {
     const moduleName = languages[currentLang]['mod_' + moduleKey] || moduleKey;
-    alert(`${languages[currentLang].alert_msg} [ ${moduleName} ]`);
+    alert(`${languages[currentLang].alert_msg} [${moduleName}]`);
 }
