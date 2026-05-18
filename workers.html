@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة قائمة العمال - E.N.S.P</title>
+    <title id="nav-title">إدارة قائمة العمال - E.N.S.P</title>
+    <link rel="icon" href="ensp.icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+    
+    <!-- كود حماية لمنع الوميض الأبيض عند الانتقال بين الصفحات -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+    
     <style>
-        /* التنسيق الموحد والمطابق تماماً لصفحة الغيابات */
-        .workers-container { padding: 20px; max-width: 1100px; margin: 120px auto 20px auto; background: #fff; }
+        /* التنسيق الموحد لصفحة إدارة العمال */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f7f9fa; transition: background 0.3s, color 0.3s; }
+        .workers-container { padding: 20px; max-width: 1100px; margin: 90px auto 20px auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         
         .workers-table { 
             width: 100%; 
@@ -33,203 +41,179 @@
             font-size: 0.95rem; 
         }
         
-        /* الهيدر المتدرج الفخم باللون البرتقالي */
         .workers-table th { 
             background: linear-gradient(135deg, #ff7300, #ff9100); 
             color: white; 
             font-weight: 600; 
         }
 
-        .workers-table tbody tr {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+        .workers-table tbody tr { cursor: pointer; transition: background-color 0.2s; }
+        .workers-table tbody tr:hover td { background-color: #f8f9fa; }
 
-        .workers-table tbody tr:hover td {
-            background-color: #f8f9fa;
-        }
-
-        .workers-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* شارة الرقم الوظيفي الأنيقة بجانب الاسم */
         .emp-badge-id {
-            background: rgba(255, 115, 0, 0.1);
-            color: #ff7300;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
-            margin-right: 10px;
-            display: inline-block;
+            background: rgba(255, 115, 0, 0.1); color: #ff7300; padding: 2px 8px; border-radius: 4px;
+            font-weight: bold; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; margin-right: 10px; display: inline-block;
         }
         html[dir="ltr"] .emp-badge-id { margin-right: 0; margin-left: 10px; }
 
-        /* تنسيق صور العمال داخل الجدول */
-        .table-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ff7300;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+        .table-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #ff7300; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
-        /* أدوات التحكم العلوية */
-        .header-tools { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: #fff; 
-            padding: 15px; 
-            border-radius: 6px; 
-            box-shadow: 0 1px 5px rgba(0,0,0,0.02); 
-            border: 1px solid #e9ecef;
-            gap: 15px;
-        }
-
-        .search-input {
-            padding: 8px 15px;
-            border-radius: 6px;
-            border: 1px solid #ced4da;
-            width: 280px;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-        .search-input:focus {
-            border-color: #ff7300;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 115, 0, 0.1);
-        }
+        .header-tools { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 1px 5px rgba(0,0,0,0.02); border: 1px solid #e9ecef; gap: 15px; }
+        .search-input { padding: 8px 15px; border-radius: 6px; border: 1px solid #ced4da; width: 280px; font-family: inherit; font-size: 0.9rem; }
         
-        /* أزرار الإجراءات السفلى */
         .action-buttons { display: flex; gap: 15px; margin-top: 20px; }
-        .btn-action { 
-            border: none; padding: 10px 22px; border-radius: 4px; font-size: 0.95rem; 
-            cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.2s; 
-        }
+        .btn-action { border: none; padding: 10px 22px; border-radius: 4px; font-size: 0.95rem; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
         .btn-add { background: #ff7300; color: white; }
-        .btn-add:hover { background: #e06500; }
         .btn-pdf { background: #2c3e50; color: white; }
-        .btn-pdf:hover { background: #1a252f; }
         
         html[dir="ltr"] .workers-table th, html[dir="ltr"] .workers-table td { text-align: left; }
         
-        /* 🖨️ ترويسة ورق الـ PDF النظيف عند الطباعة */
         .pdf-header { display: none; text-align: center; margin-bottom: 20px; border-bottom: 3px double #ff7300; padding-bottom: 10px; }
         .pdf-header img { height: 60px; margin-bottom: 5px; }
-
-        /* تفعيل وضع الطباعة النظيفة */
         .pdf-mode .action-buttons, .pdf-mode .header-tools { display: none !important; }
-        .pdf-mode .workers-container { box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
 
-        /* 🌟 تنسيق نافذة عرض الحقيبة التقنية للموظف (Modal) */
-        .worker-modal {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
-            overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+        /* الترويسة العلوية النظيفة (بدون لغات متزاحمة) */
+        .top-bar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 65px; background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between;
+            align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 1500; transition: background 0.3s;
         }
-        .modal-content {
-            background-color: #fff; margin: 6% auto; padding: 25px; border-radius: 8px;
-            width: 90%; max-width: 700px; box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-            position: relative; border-top: 5px solid #ff7300;
+        .nav-right { display: flex; align-items: center; gap: 12px; max-width: 60%; }
+        .nav-left { display: flex; align-items: center; gap: 15px; max-width: 40%; justify-content: flex-end; }
+        .brand-wrapper { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+        .nav-logo { height: 38px; width: auto; flex-shrink: 0; object-fit: contain; }
+        .sys-title { margin: 0; font-size: 1rem; font-weight: bold; color: #2c3e50; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .user-meta { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+        .coordinator-badge { background: #ff7300; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
+        .user-name-txt { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .avatar-top { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd; flex-shrink: 0; }
+
+        /* ستايل اللوحة الجانبية للإعدادات (نصف الشاشة 50%) */
+        .settings-sidebar {
+            position: fixed; top: 0; right: -50%; width: 50%; height: 100%; background-color: #ffffff;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.15); z-index: 3000; transition: right 0.4s ease, left 0.4s ease;
+            display: flex; flex-direction: column; padding: 25px; box-sizing: border-box;
         }
-        .close-modal {
-            position: absolute; top: 15px; left: 20px; font-size: 1.6rem; color: #aaa; cursor: pointer; transition: 0.2s;
-        }
+        .settings-sidebar.open { right: 0; }
+
+        html[dir="ltr"] .settings-sidebar { right: auto; left: -50%; box-shadow: 5px 0 15px rgba(0,0,0,0.15); }
+        html[dir="ltr"] .settings-sidebar.open { left: 0; }
+
+        .sidebar-custom-header { display: flex; flex-direction: column; border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 25px; position: relative; }
+        .sidebar-subtitle-top { font-size: 1.1rem; color: #555; margin: 0 0 10px 0; font-weight: 500; }
+        .sidebar-main-title-wrapper { display: flex; align-items: center; gap: 12px; }
+        .sidebar-main-title-wrapper h3 { margin: 0; font-size: 1.6rem; font-weight: bold; display: flex; align-items: center; gap: 10px; color: #2c3e50; }
+        .sidebar-main-title-wrapper i { font-size: 1.7rem; color: #ff7300; }
+        .close-sidebar-btn { position: absolute; top: -10px; left: 0; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #666; }
+        html[dir="ltr"] .close-sidebar-btn { left: auto; right: 0; }
+
+        .settings-options-container { margin-top: 20px; }
+        .setting-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: 600; font-size: 0.95rem; }
+        .setting-item select, .setting-item button { padding: 8px 15px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #333; cursor: pointer; font-size: 0.9rem; font-family: inherit; }
+        .btn-theme-toggle { background: #f0f0f0; border: none; transition: 0.2s; }
+        .btn-theme-toggle:hover { background: #e0e0e0; }
+
+        .sidebar-footer-note { margin-top: auto; text-align: center; font-size: 0.7rem; color: rgba(0, 0, 0, 0.4); font-family: Arial, sans-serif; white-space: nowrap; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2999; display: none; }
+        .sidebar-overlay.show { display: block; }
+
+        /* تصميم نافذة المودال لعرض البيانات بالكامل */
+        .worker-modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); backdrop-filter: blur(3px); }
+        .modal-content { background-color: #fff; margin: 8% auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); position: relative; border-top: 5px solid #ff7300; color: #333; }
+        .close-modal { position: absolute; top: 15px; left: 20px; font-size: 1.5rem; color: #aaa; cursor: pointer; }
         html[dir="ltr"] .close-modal { left: auto; right: 20px; }
-        .close-modal:hover { color: #333; }
         
-        .modal-profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .modal-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #ff7300; }
-        .modal-header-info h3 { margin: 0 0 5px 0; color: #2c3e50; font-size: 1.4rem; }
+        .modal-profile-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .modal-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ff7300; }
+        .modal-header-info h3 { margin: 0 0 5px 0; color: #2c3e50; font-size: 1.25rem; }
 
-        .role-tag { padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; display: inline-block; border: 1px solid; }
-        .tag-operator { border-color: #007bff; color: #004085; background-color: #cce5ff; }
-        .tag-mechanic { border-color: #28a745; color: #155724; background-color: #d4edda; }
-        .tag-driver { border-color: #ffc107; color: #856404; background-color: #fff3cd; }
-        .tag-helper { border-color: #6c757d; color: #343a40; background-color: #e2e3e5; }
+        .role-tag { padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
+        .tag-operator { color: #004085; background-color: #cce5ff; }
+        .tag-mechanic { color: #155724; background-color: #d4edda; }
+        .tag-driver { color: #856404; background-color: #fff3cd; }
+        .tag-helper { color: #343a40; background-color: #e2e3e5; }
         
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .info-item { background: #f8f9fa; padding: 10px 12px; border-radius: 6px; border-right: 3px solid #ced4da; }
-        html[dir="ltr"] .info-item { border-right: none; border-left: 3px solid #ced4da; }
-        .info-item label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 4px; font-weight: bold; }
-        .info-item span { font-size: 0.95rem; color: #2c3e50; font-weight: 600; }
-        
-        .training-bag-section { background: #fff8f2; border: 1px dashed #ff7300; padding: 15px; border-radius: 6px; margin-top: 15px; }
-        .training-bag-title { display: flex; align-items: center; gap: 8px; color: #e06500; font-weight: bold; margin-bottom: 12px; font-size: 1.05rem; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .info-item { display: flex; flex-direction: column; }
+        .info-item span { font-size: 0.8rem; color: #777; }
+        .info-item strong { font-size: 0.9rem; color: #333; margin-top: 2px; }
 
-        @media (max-width: 768px) {
-            .workers-container { margin-top: 140px; padding: 10px; }
-            .header-tools { flex-direction: column; gap: 12px; align-items: stretch; text-align: center; }
-            .search-input { width: 100%; }
-            .action-buttons { flex-direction: column; }
-            .btn-action { justify-content: center; width: 100%; }
-            .info-grid { grid-template-columns: 1fr; }
-        }
+        .training-section { background: #f8f9fa; padding: 15px; border-radius: 6px; border-right: 4px solid #ff7300; margin-top: 15px; }
+        html[dir="ltr"] .training-section { border-right: none; border-left: 4px solid #ff7300; }
+        .training-section h4 { margin: 0 0 10px 0; color: #ff7300; font-size: 0.95rem; }
+
+        /* دعم الوضع الداكن الشامل المتطور */
+        [data-theme="dark"] body { background-color: #121212; color: #fff; }
+        [data-theme="dark"] .top-bar, [data-theme="dark"] .workers-container, [data-theme="dark"] .settings-sidebar, [data-theme="dark"] .modal-content { background-color: #1a1a1a; color: #fff; }
+        [data-theme="dark"] .settings-sidebar { border-left: 1px solid #333; }
+        [data-theme="dark"] html[dir="ltr"] .settings-sidebar { border-left: none; border-right: 1px solid #333; }
+        [data-theme="dark"] .sidebar-custom-header { border-bottom-color: #333; }
+        [data-theme="dark"] .sidebar-subtitle-top { color: #bbb; }
+        [data-theme="dark"] .sidebar-main-title-wrapper h3 { color: #fff; }
+        [data-theme="dark"] .close-sidebar-btn { color: #ccc; }
+        [data-theme="dark"] .setting-item select { background: #252525; color: #fff; border-color: #444; }
+        [data-theme="dark"] .btn-theme-toggle { background: #333; color: #fff; }
+        [data-theme="dark"] .sidebar-footer-note { color: rgba(255, 255, 255, 0.3); }
+        [data-theme="dark"] .sys-title, [data-theme="dark"] .modal-header-info h3, [data-theme="dark"] .info-item strong { color: #fff; }
+        [data-theme="dark"] .header-tools, [data-theme="dark"] .search-input { background: #222; color: #fff; border-color: #444; }
+        [data-theme="dark"] .workers-table { background: #1a1a1a; border-color: #444; }
+        [data-theme="dark"] .workers-table td { border-bottom-color: #333; color: #eee; }
+        [data-theme="dark"] .workers-table tbody tr:hover td { background-color: #252525; }
+        [data-theme="dark"] .training-section { background: #252525; }
     </style>
 </head>
 <body>
 
+    <!-- الترويسة العلوية النظيفة لمنع الازدحام -->
     <header class="top-bar">
-        <div class="right-section">
-            <a href="index.html" class="theme-style-btn" style="text-decoration:none;" title="رجوع للرئيسية"><i class="fa-solid fa-arrow-right"></i></a>
-            
-            <div class="brand-container">
-                <img src="Sonatrach.icon.png" alt="Sonatrach" class="nav-logo-img sonatrach-logo">
-                <h1 class="system-title" id="page-title">
-                     منظومة إدارة عمال وموظفي ورشات ENSP
-                </h1>
-                <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo-img ensp-logo">
+        <div class="nav-right">
+            <a href="index.html" style="color: inherit; text-decoration: none; margin-left: 5px;"><i class="fa-solid fa-arrow-right"></i></a>
+            <div class="brand-wrapper">
+                <img src="Sonatrach.icon.png" alt="Sonatrach" class="nav-logo">
+                <h1 id="nav-system-title" class="sys-title">Projet Nord Oran - E.N.S.P</h1>
+                <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo">
             </div>
         </div>
         
-        <div class="left-section">
-            <div class="language-switch">
-                <span id="lang-ar" class="lang active" onclick="toggleLanguage('ar')"><i class="fa-solid fa-globe"></i> AR</span>
-                <span id="lang-fr" class="lang" onclick="switchLanguageFR()">FR</span>
+        <div class="left-section" style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
+            <div class="user-profile" style="display: flex; align-items: center; gap: 8px;">
+                <span id="user-role" class="role-badge" style="font-size: 0.8rem; padding: 3px 8px; border-radius: 4px;"><i class="fa-solid fa-user-shield"></i> <span data-i18n="user_role">منسق</span></span>
+                <span id="user-display-name" style="font-size: 0.85rem; font-weight: 500; white-space: nowrap;">عبد القادر حفراد</span>
+                
+                <img src="abd.icon.png" alt="عبد القادر حفراد" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
             </div>
             
-            <div class="user-profile">
-                <span id="user-role" class="role-badge"><i class="fa-solid fa-user-shield"></i> منسق</span>
-                <span id="user-display">عبد القادر حفراد</span>
-                
-                <img src="abd.icon.png" alt="عبد القادر حفراد" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
-                
-                <a href="index.html" class="logout-btn-icon-only" title="تسجيل الخروج والانتقال للرئيسية">
-                    <i class="fa-solid fa-power-off"></i>
-                </a>
-            </div>
+            <!-- زر الإعدادات لفتح لوحة التحكم بنصف الشاشة -->
+            <button onclick="toggleSettingsSidebar(true)" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:inherit; padding: 5px;"><i class="fa-solid fa-gear"></i></button>
         </div>
     </header>
 
-    <main class="workers-container" id="printable-area">
-        
+    <div class="workers-container" id="printable-area">
         <div class="pdf-header" id="pdf-only-header">
-            <img src="ensp.icon.png" alt="E.N.S.P">
-            <h2 style="margin:2px 0; color:#2c3e50; font-size: 1.5rem;">المؤسسة الوطنية للخدمات في الآبار - E.N.S.P</h2>
-            <h3 style="margin:5px 0; color:#ff7300; font-size: 1.2rem;" id="pdf-title">القائمة الاسمية الرسمية لعمال الورشة</h3>
-            <p style="margin:5px 0; font-weight:bold; font-size:1rem;" id="pdf-date-text"></p>
+            <img src="ensp.icon.png" alt="ENSP Logo"><br>
+            <strong style="font-size: 1.2rem; color:#ff7300;">المؤسسة الوطنية لخدمات الآبار - E.N.S.P</strong>
+            <h2 id="pdf-title">القائمة الاسمية الرسمية لعمال الورشة</h2>
+            <p id="pdf-date-text">تاريخ استخراج المستند: --/--/----</p>
         </div>
 
+        <h1 id="page-title" class="main-page-title">
+            منظومة إدارة عمال وموظفي ورشات ENSP
+        </h1>
+        
         <div class="header-tools">
-            <div style="display: flex; align-items: center; width: 100%; max-width: 400px;">
-                <i class="fa-solid fa-magnifying-glass" style="color: #888; margin-left: 8px; margin-right: 5px;"></i>
-                <input type="text" id="search-box" class="search-input" placeholder="بحث باسم العامل أو المعرف..." oninput="filterWorkers()">
-            </div>
-            <div style="font-size: 0.95rem; color: #555; font-weight: bold;" id="txt-total">إجمالي العمال المقيدين بالورشة: 24 عامل</div>
+            <input type="text" id="search-box" class="search-input" placeholder="ابحث باسم العامل أو الرقم الوظيفي..." oninput="filterWorkers()">
+            <span id="txt-total" style="font-weight: bold; color: #4a5568;">إجمالي العمال المقيدين بالورشة: 24 عامل</span>
         </div>
 
         <table class="workers-table">
             <thead>
                 <tr>
-                    <th id="th-img" style="width: 15%; text-align: center;">صورة العامل</th>
-                    <th id="th-name" style="width: 55%;">اسم ولقب الموظف (الرقم الوظيفي)</th>
+                    <th id="th-img" style="width: 80px; text-align: center;">صورة العامل</th>
+                    <th id="th-name">اسم ولقب الموظف (الرقم الوظيفي)</th>
                 </tr>
             </thead>
-            <tbody id="workers-table-body">
-            </tbody>
+            <tbody id="workers-table-body"></tbody>
         </table>
 
         <div class="action-buttons">
@@ -240,59 +224,65 @@
                 <i class="fa-solid fa-file-pdf"></i> <span id="btn-text-pdf">تحميل وطباعة القائمة PDF</span>
             </button>
         </div>
-    </main>
+    </div>
 
+    <!-- مودال تفاصيل الموظف -->
     <div id="workerProfileModal" class="worker-modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeWorkerModal()">&times;</span>
-            
             <div class="modal-profile-header">
-                <img id="modal-worker-img" src="abd.icon.png" alt="بروفيل العامل" class="modal-avatar">
+                <img id="modal-worker-img" src="" alt="Worker" class="modal-avatar">
                 <div class="modal-header-info">
-                    <h3 id="modal-worker-fullname">عبد القادر حفراد</h3>
-                    <span id="modal-worker-badge" class="role-tag tag-operator">رئيس ورشة / منسق</span>
+                    <h3 id="modal-worker-fullname">--</h3>
+                    <span id="modal-worker-badge" class="role-tag">--</span>
                 </div>
             </div>
-
             <div class="info-grid">
-                <div class="info-item">
-                    <label id="lbl-modal-id">المعرف الرقمي:</label>
-                    <span id="modal-worker-id">EMP01</span>
-                </div>
-                <div class="info-item">
-                    <label id="lbl-modal-age">العمر الحالي:</label>
-                    <span id="modal-worker-age">42 سنة</span>
-                </div>
-                <div class="info-item">
-                    <label id="lbl-modal-phone">رقم الهاتف:</label>
-                    <span id="modal-worker-phone">+213 655 12 34 56</span>
-                </div>
-                <div class="info-item">
-                    <label id="lbl-modal-status">الحالة الاجتماعية:</label>
-                    <span id="modal-worker-status">متزوج</span>
+                <div class="info-item"><span id="lbl-modal-id">المعرف الرقمي:</span><strong id="modal-worker-id">--</strong></div>
+                <div class="info-item"><span id="lbl-modal-age">العمر الحالي:</span><strong id="modal-worker-age">--</strong></div>
+                <div class="info-item"><span id="lbl-modal-phone">رقم الهاتف:</span><strong id="modal-worker-phone">--</strong></div>
+                <div class="info-item"><span id="lbl-modal-status">الحالة الاجتماعية:</span><strong id="modal-worker-status">--</strong></div>
+            </div>
+            <div class="training-section">
+                <h4 id="modal-training-title">بيانات وحقيبة التكوين المهني الصناعي</h4>
+                <div style="margin-bottom: 8px;" class="info-item"><span id="lbl-modal-course">مادة التكوين المعتمدة:</span><strong id="modal-worker-course">--</strong></div>
+                <div class="info-grid" style="margin-bottom:0;">
+                    <div class="info-item"><span id="lbl-modal-date">تاريخ الدورة:</span><strong id="modal-worker-course-date">--</strong></div>
+                    <div class="info-item"><span id="lbl-modal-place">مكان التكوين:</span><strong id="modal-worker-course-place">--</strong></div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="training-bag-section">
-                <div class="training-bag-title">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                    <span id="modal-training-title">بيانات وحقيبة التكوين المهني الصناعي</span>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <strong id="lbl-modal-course" style="color: #2c3e50; font-size: 0.9rem;">مادة التكوين المعتمدة:</strong>
-                    <p id="modal-worker-course" style="margin: 5px 0 0 0; font-size: 0.95rem; color: #555; line-height: 1.4;"></p>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; border-top: 1px dashed #ffd0a8; padding-top: 10px;">
-                    <div>
-                        <strong id="lbl-modal-date" style="color: #2c3e50; font-size: 0.85rem;">تاريخ الدورة والتكوين:</strong>
-                        <p id="modal-worker-course-date" style="margin: 3px 0 0 0; font-size: 0.9rem; color: #ff7300; font-weight: bold;"></p>
-                    </div>
-                    <div>
-                        <strong id="lbl-modal-place" style="color: #2c3e50; font-size: 0.85rem;">مقر ومكان التكوين:</strong>
-                        <p id="modal-worker-course-place" style="margin: 3px 0 0 0; font-size: 0.9rem; color: #555;"></p>
-                    </div>
-                </div>
+    <!-- واجهة الإعدادات الجانبية المحدثة بالكامل (%50) -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSettingsSidebar(false)"></div>
+    <div id="settings-sidebar" class="settings-sidebar">
+        <div class="sidebar-custom-header">
+            <button class="close-sidebar-btn" onclick="toggleSettingsSidebar(false)">&times;</button>
+            <span class="sidebar-subtitle-top" id="sidebar-subtitle">وسائل أخرى</span>
+            <div class="sidebar-main-title-wrapper">
+                <i class="fa-solid fa-gear"></i> <h3 id="sidebar-main-title">الاعـدادات</h3>
             </div>
+        </div>
+        
+        <div class="settings-options-container">
+            <div class="setting-item">
+                <span id="sidebar-theme-label">الوضع / المظهر:</span>
+                <button id="sidebar-theme-toggle" class="btn-theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+            </div>
+            
+            <div class="setting-item">
+                <span id="sidebar-lang-label">لغة النظام:</span>
+                <select id="sidebar-lang-select" onchange="toggleLanguage(this.value)">
+                    <option value="ar">العربية (AR)</option>
+                    <option value="en">English (EN)</option>
+                    <option value="fr">Français (FR)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sidebar-footer-note">
+            Le coordinateur hafrad abdalkadre
         </div>
     </div>
 
