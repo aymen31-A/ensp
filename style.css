@@ -429,38 +429,35 @@ html[dir="ltr"] .alert-module {
 }
 
 /* ==========================================================================
-   هندسة التجاوب الخاصة بالهواتف الذكية ( لمنع الاكتظاظ وتداخل العناصر تماماً )
+   هندسة التجاوب الخاصة بالهواتف الذكية (لمنع الاكتظاظ وتداخل العناصر تماماً)
    ========================================================================== */
 @media (max-width: 768px) {
     .top-bar {
         padding: 0 12px;
-        height: 75px; /* رفع الارتفاع قليلاً لراحة العين */
+        height: 75px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    /* تعديل حاوية الشعارات للهاتف لتفادي التداخل */
     .brand-container {
         gap: 6px;
     }
 
     .sonatrach-logo, .ensp-logo {
-        height: 35px; /* تصغير متناسق للشعارات */
+        height: 35px;
     }
 
-    /* إخفاء نص العنوان الطويل على الهاتف ليحل محله الأيقونة والشعارات المفتوحة آمنة */
     .system-title {
-        font-size: 0px; /* إخفاء النص مع الحفاظ على الأيقونة */
+        font-size: 0px;
     }
     .system-title i {
-        font-size: 1.2rem; /* ترك الأيقونة الصغيرة فقط كفاصل جمالي */
+        font-size: 1.2rem;
         margin: 0 2px;
     }
 
-    /* إخفاء تبديل اللغة والوضع المظلم بداخل قائمة منسدلة أو إخفاء الاسم الصريح للمستخدم */
     #user-display-name, .language-switch {
-        display: none !important; /* إخفاء اسم المستخدم بالعربية لتوفير مساحة لصورته وزر الإطفاء */
+        display: none !important;
     }
 
     .user-profile {
@@ -469,14 +466,13 @@ html[dir="ltr"] .alert-module {
 
     .role-badge {
         padding: 4px 6px;
-        font-size: 0.75rem; /* تصغير بطاقة منسق تلقائياً */
+        font-size: 0.75rem;
     }
 
     .left-section {
         gap: 8px;
     }
 
-    /* تعديل توزيع المحتوى الرئيسي */
     .main-content {
         margin-top: 75px;
         flex-direction: column;
@@ -488,9 +484,8 @@ html[dir="ltr"] .alert-module {
         width: 100%;
     }
 
-    /* شبكة الأزرار المربعة الأصلية على الهاتف (عمودين متناسقين تماماً بدلاً من التراكم العشوائي) */
     .modules-grid {
-        grid-template-columns: repeat(2, 1fr); 
+        grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
 
@@ -506,5 +501,153 @@ html[dir="ltr"] .alert-module {
 
     .module-item span {
         font-size: 0.85rem;
+    }
+}
+
+/* ==========================================================================
+   تحسينات إضافية للهواتف الصغيرة جداً (480px فما دون)
+   ========================================================================== */
+@media (max-width: 480px) {
+/* تحسين اللوحة الجانبية للهواتف */
+@media (max-width: 768px) {
+    .settings-sidebar {
+        width: 85% !important;
+        right: -85% !important;
+    }
+    
+    html[dir="ltr"] .settings-sidebar {
+        right: auto !important;
+        left: -85% !important;
+    }
+    
+    .settings-sidebar.open {
+        right: 0 !important;
+    }
+    
+    html[dir="ltr"] .settings-sidebar.open {
+        left: 0 !important;
+        right: auto !important;
+    }
+    
+    /* تحسين حجم الخطوط داخل اللوحة */
+    .sidebar-subtitle-top {
+        font-size: 0.9rem;
+    }
+    
+    .sidebar-main-title-wrapper h3 {
+        font-size: 1.3rem;
+    }
+    
+    .setting-item {
+        font-size: 0.9rem;
+    }
+    
+    .setting-item select, 
+    .setting-item button {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-sidebar {
+        width: 100% !important;
+        right: -100% !important;
+    }
+    
+    html[dir="ltr"] .settings-sidebar {
+        left: -100% !important;
+    }
+}
+    }
+    
+    /* تصغير حجم الساعة على الهاتف */
+    .clock-card h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .clock-card h2 i {
+        font-size: 1.3rem !important;
+    }
+    
+    /* تقليل padding في البطاقات لتوفير مساحة */
+    .info-card {
+        padding: 15px !important;
+    }
+    
+    /* جعل الأزرار أكبر قليلاً للنقر بالإصبع */
+    .module-item {
+        padding: 15px 8px !important;
+        min-height: 90px;
+    }
+    
+    .module-icon {
+        font-size: 1.6rem !important;
+    }
+    
+    /* تحسين ظهور النص في لوحة الإعدادات */
+    .sidebar-footer-note {
+        white-space: normal !important;
+        font-size: 0.55rem !important;
+        word-break: break-word;
+    }
+    
+    /* تحسين نموذج تسجيل الدخول على الهواتف الصغيرة */
+    .login-card {
+        padding: 25px !important;
+    }
+    
+    .login-header h2 {
+        font-size: 1.4rem !important;
+    }
+    
+    /* تقليل حجم أيقونات الإحصائيات */
+    .stat-row {
+        font-size: 0.85rem !important;
+        padding: 8px 0 !important;
+    }
+    
+    .stats-card h3 {
+        font-size: 1rem !important;
+    }
+}
+
+/* ==========================================================================
+   تحسينات خاصة باللمس للهواتف (زيادة مساحة النقر)
+   ========================================================================== */
+@media (hover: none) and (pointer: coarse) {
+    .module-item, 
+    .lang-btn,
+    .close-sidebar-btn,
+    .logout-btn-icon-only,
+    .btn-login,
+    .menu-toggle {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* زيادة مساحة النقر لأزرار اللغة */
+    .lang-btn {
+        padding: 8px 12px;
+        display: inline-block;
+    }
+    
+    /* زيادة مساحة النقر لأزرار الإغلاق */
+    .close-sidebar-btn {
+        padding: 10px;
+        font-size: 2rem !important;
+    }
+}
+
+/* ==========================================================================
+   تحسينات إضافية للشاشات المتوسطة (تابلت)
+   ========================================================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .modules-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .sidebar-info {
+        width: 280px;
     }
 }
