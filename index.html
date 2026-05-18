@@ -7,6 +7,175 @@
     <link rel="icon" href="ensp.icon.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <head>
+    <!-- كود حماية لمنع الوميض الأبيض عند الانتقال بين الصفحات -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+    <style>
+        /* ستايل اللوحة الجانبية للإعدادات (نصف الشاشة) */
+        .settings-sidebar {
+            position: fixed;
+            top: 0;
+            right: -50%; /* مخفية في البداية جهة اليمين */
+            width: 50%; /* تأخذ نصف الشاشة تماماً */
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.15);
+            z-index: 3000;
+            transition: right 0.4s ease, left 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+        
+        /* ضبط اللوحة عندما تفتح */
+        .settings-sidebar.open {
+            right: 0;
+        }
+
+        /* لدعم الواجهة الإنجليزية والفرنسية ينعكس الاتجاه */
+        html[dir="ltr"] .settings-sidebar {
+            right: auto;
+            left: -50%;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.15);
+        }
+        html[dir="ltr"] .settings-sidebar.open {
+            left: 0;
+        }
+
+        /* ستايل المظهر الداكن للوحة */
+        [data-theme="dark"] .settings-sidebar {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border-left: 1px solid #333;
+        }
+        [data-theme="dark"] html[dir="ltr"] .settings-sidebar {
+            border-left: none;
+            border-right: 1px solid #333;
+        }
+
+        /* الهيدر المحدث بناءً على الصورة والمطلوب */
+        .sidebar-custom-header {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        [data-theme="dark"] .sidebar-custom-header {
+            border-bottom-color: #333;
+        }
+
+        .sidebar-subtitle-top {
+            font-size: 1.1rem;
+            color: #333;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+        [data-theme="dark"] .sidebar-subtitle-top {
+            color: #bbb;
+        }
+
+        .sidebar-main-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-main-title-wrapper h3 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* أيقونة تروس واحدة فقط مفردة */
+        .sidebar-main-title-wrapper i {
+            font-size: 1.7rem;
+            color: #111;
+        }
+        [data-theme="dark"] .sidebar-main-title-wrapper i {
+            color: #fff;
+        }
+
+        /* زر الإغلاق علامة X */
+        .close-sidebar-btn {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #666;
+        }
+        html[dir="ltr"] .close-sidebar-btn {
+            left: auto;
+            right: 0;
+        }
+        [data-theme="dark"] .close-sidebar-btn {
+            color: #ccc;
+        }
+
+        /* حاوية تدفع الإعدادات لتظهر في الجزء السفلي للوحة الجانبية */
+        .settings-options-container {
+            margin-top: 20px; /* تترك مسافة مناسبة بعد الهيدر وتظهر تحته */
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .setting-item select, .setting-item button {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+        }
+        [data-theme="dark"] .setting-item select, [data-theme="dark"] .setting-item button {
+            background: #333;
+            color: #fff;
+            border-color: #555;
+        }
+
+        /* النص الشفاف الصغير في أسفل اللوحة تماماً */
+        .sidebar-footer-note {
+            margin-top: auto; 
+            text-align: center;
+            font-size: 0.65rem;
+            color: rgba(0, 0, 0, 0.4);
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
+        }
+        [data-theme="dark"] .sidebar-footer-note {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* غطاء خلفي شفاف عند فتح القائمة */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 2999;
+            display: none;
+        }
+        .sidebar-overlay.show { display: block; }
+    </style>
 </head>
 <body>
 
@@ -33,7 +202,8 @@
             <div id="login-error" class="error-msg"></div>
             
             <div class="lang-switcher-login">
-                <span class="lang-btn active" onclick="switchLanguage('ar')"><i class="fa-solid fa-earth-africa"></i> AR</span> | 
+                <span class="lang-btn" onclick="switchLanguage('ar')">AR</span> | 
+                <span class="lang-btn" onclick="switchLanguage('en')">EN</span> | 
                 <span class="lang-btn" onclick="switchLanguage('fr')">FR</span>
             </div>
         </div>
@@ -41,37 +211,31 @@
 
     <div id="main-dashboard" class="dashboard-layout hidden">
         
-        <header class="top-bar">
-            <div class="right-section">
-                <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+        <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 0 15px; height: 60px;">
+            
+            <div class="right-section" style="display: flex; align-items: center; gap: 12px; flex-grow: 1;">
+                <button class="menu-toggle" id="menu-toggle-btn"><i class="fa-solid fa-bars"></i></button>
                 
-                <div class="brand-container">
-                    <img src="Sonatrach.icon.png" alt="Sonatrach" class="nav-logo-img sonatrach-logo">
-                    <h1 class="system-title" data-i18n="nav_title">
-                        <i class="fa-solid fa-compass-drafting"></i> Project Nord Oran -
+                <div class="brand-container" style="display: flex; align-items: center; gap: 8px;">
+                    <img src="Sonatrach.icon.png" alt="Sonatrach" class="nav-logo-img sonatrach-logo" style="height: 32px; width: auto; object-fit: contain;">
+                    
+                    <h1 class="system-title" data-i18n="nav_title" style="margin: 0; font-size: 0.8rem; font-weight: bold; white-space: nowrap;">
+                        Project Nord Oran - E.N.S.P
                     </h1>
-                    <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo-img ensp-logo">
+                    
+                    <img src="ensp.icon.png" alt="E.N.S.P" class="nav-logo-img ensp-logo" style="height: 32px; width: auto; object-fit: contain;">
                 </div>
             </div>
             
-            <div class="left-section">
-                <button id="theme-toggle" class="theme-style-btn" title="تبديل الوضع">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                
-                <div class="language-switch">
-                    <span id="lang-ar" class="lang active" onclick="switchLanguage('ar')"><i class="fa-solid fa-globe"></i> AR</span>
-                    <span id="lang-fr" class="lang" onclick="switchLanguage('fr')">FR</span>
-                </div>
-                
-                <div class="user-profile">
-                    <span id="user-role" class="role-badge"><i class="fa-solid fa-user-shield"></i> منسق</span>
-                    <span id="user-display-name">عبد القادر حفراد</span>
+            <div class="left-section" style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
+                <div class="user-profile" style="display: flex; align-items: center; gap: 8px;">
+                    <span id="user-role" class="role-badge" style="font-size: 0.8rem; padding: 3px 8px; border-radius: 4px;"><i class="fa-solid fa-user-shield"></i> <span data-i18n="user_role">منسق</span></span>
+                    <span id="user-display-name" style="font-size: 0.85rem; font-weight: 500; white-space: nowrap;">عبد القادر حفراد</span>
                     
-                    <img src="abd.icon.png" alt="عبد القادر حفراد" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
+                    <img src="abd.icon.png" alt="عبد القادر حفراد" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); flex-shrink: 0;">
                     
-                    <button id="btn-logout" class="logout-btn-icon-only" title="تسجيل الخروج">
-                        <i class="fa-solid fa-power-off"></i>
+                    <button id="btn-logout" class="logout-btn-icon-only" title="تسجيل الخروج" style="background: none; border: none; cursor: pointer;">
+                        <i class="fa-solid fa-power-off" style="color: #dc2626;"></i>
                     </button>
                 </div>
             </div>
@@ -87,21 +251,21 @@
                 </div>
 
                 <div class="info-card stats-card">
-                    <h3><i class="fa-solid fa-chart-pie"></i> إحصائيات سريعة</h3>
+                    <h3 data-i18n="quick_stats"><i class="fa-solid fa-chart-pie"></i> إحصائيات سريعة</h3>
                     <div class="stat-row">
-                        <span><i class="fa-solid fa-users"></i> عدد العمال</span>
+                        <span><i class="fa-solid fa-users"></i> <span data-i18n="stat_workers">عدد العمال</span></span>
                         <strong id="stat-workers">24</strong>
                     </div>
                     <div class="stat-row">
-                        <span><i class="fa-solid fa-truck"></i> المركبات والآليات</span>
+                        <span><i class="fa-solid fa-truck"></i> <span data-i18n="stat_vehicles">المركبات والآليات</span></span>
                         <strong id="stat-vehicles">45</strong>
                     </div>
                     <div class="stat-row">
-                        <span><i class="fa-solid fa-triangle-exclamation"></i> الأعطال النشطة</span>
+                        <span><i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="stat_faults">الأعطال النشطة</span></span>
                         <strong id="stat-faults" class="danger-text">3</strong>
                     </div>
                     <div class="stat-row">
-                        <span><i class="fa-solid fa-file-invoice"></i> التقارير المرفوعة</span>
+                        <span><i class="fa-solid fa-file-invoice"></i> <span data-i18n="stat_reports">التقارير المرفوعة</span></span>
                         <strong id="stat-reports">27</strong>
                     </div>
                 </div>
@@ -162,7 +326,8 @@
                     <i class="fa-solid fa-chart-line module-icon"></i>
                     <span data-i18n="mod_charts">منحنيات الأداء</span>
                 </div>
-                <div class="module-item" onclick="triggerModule('settings')">
+                
+                <div class="module-item" onclick="toggleSettingsSidebar(true)">
                     <i class="fa-solid fa-gear module-icon"></i>
                     <span data-i18n="mod_settings">الإعدادات والصلاحيات</span>
                 </div>
@@ -175,18 +340,47 @@
         </footer>
     </div>
 
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSettingsSidebar(false)"></div>
+
+    <div id="settings-sidebar" class="settings-sidebar">
+        <div class="sidebar-custom-header">
+            <button class="close-sidebar-btn" onclick="toggleSettingsSidebar(false)">&times;</button>
+            <span class="sidebar-subtitle-top" data-i18n="other_means">وسائل أخرى</span>
+            <div class="sidebar-main-title-wrapper">
+                <i class="fa-solid fa-gear"></i> <h3 data-i18n="settings_title">الاعـدادات</h3>
+            </div>
+        </div>
+        
+        <div class="settings-options-container">
+            <div class="setting-item">
+                <span data-i18n="theme_label">الوضع / المظهر:</span>
+                <button id="sidebar-theme-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+            
+            <div class="setting-item">
+                <span data-i18n="lang_label">لغة النظام:</span>
+                <select id="sidebar-lang-select" onchange="switchLanguage(this.value)">
+                    <option value="ar">العربية (AR)</option>
+                    <option value="en">English (EN)</option>
+                    <option value="fr">Français (FR)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sidebar-footer-note">
+            Le coordinateur hafrad abdalkadre
+        </div>
+    </div>
+
     <script src="app.js"></script>
     <script>
-        // سكربت التوقيت الفعلي الحالي المتناسق مع توقيت الجزائر وجهازك (GMT+1)
         function updateLiveTime() {
             const timeElement = document.getElementById('live-time');
             if (timeElement) {
                 let now = new Date();
-                
                 let hours = String(now.getHours()).padStart(2, '0');
                 let minutes = String(now.getMinutes()).padStart(2, '0');
                 let seconds = String(now.getSeconds()).padStart(2, '0');
-                
                 timeElement.textContent = `${hours}:${minutes}:${seconds}`;
             }
         }
