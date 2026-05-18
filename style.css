@@ -652,8 +652,9 @@ html[dir="ltr"] .alert-module {
     }
 }
 /* ===== حل مشكلة تداخل الشعارات في اللغة الإنجليزية والفرنسية ===== */
+/* مع الحفاظ على لوحة الإعدادات */
 
-/* تحسين حاوية الشعارات */
+/* تحسين حاوية الشعارات فقط - دون التأثير على الإعدادات */
 .brand-container {
     display: flex;
     align-items: center;
@@ -679,7 +680,7 @@ html[dir="ltr"] .system-title {
     max-width: 150px;
 }
 
-/* للشاشات الصغيرة في الوضع ltr */
+/* ===== تحسينات الهواتف مع الحفاظ على الإعدادات ===== */
 @media (max-width: 768px) {
     html[dir="ltr"] .sonatrach-logo,
     html[dir="ltr"] .ensp-logo {
@@ -694,16 +695,62 @@ html[dir="ltr"] .system-title {
     html[dir="ltr"] .brand-container {
         gap: 5px;
     }
+    
+    /* التأكد من أن لوحة الإعدادات تظهر بشكل صحيح */
+    .settings-sidebar {
+        width: 85% !important;
+        z-index: 3000 !important;
+    }
+    
+    .settings-sidebar.open {
+        display: flex !important;
+        right: 0 !important;
+    }
+    
+    html[dir="ltr"] .settings-sidebar.open {
+        left: 0 !important;
+        right: auto !important;
+    }
 }
 
 @media (max-width: 480px) {
     html[dir="ltr"] .sonatrach-logo,
     html[dir="ltr"] .ensp-logo {
-        display: none !important; /* إخفاء أحد الشعارين في الهواتف الصغيرة جداً */
+        display: none !important;
     }
     
     html[dir="ltr"] .system-title {
         font-size: 0.6rem !important;
         max-width: 120px;
     }
+    
+    /* ضمان ظهور الإعدادات على الهواتف الصغيرة */
+    .settings-sidebar {
+        width: 100% !important;
+    }
 }
+
+/* حل شامل للغة الإنجليزية والفرنسية - مع الحفاظ على الإعدادات */
+html[dir="ltr"] .top-bar {
+    padding: 0 10px;
+}
+
+html[dir="ltr"] .right-section {
+    gap: 8px;
+    overflow: hidden;
+}
+
+html[dir="ltr"] .brand-container {
+    gap: 5px;
+    max-width: 60%;
+}
+
+html[dir="ltr"] .system-title {
+    font-size: 0.65rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+/* لا نلمس settings-sidebar هنا */
